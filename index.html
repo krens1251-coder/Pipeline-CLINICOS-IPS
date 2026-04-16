@@ -1,0 +1,3797 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pipeline comercial</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --line: #dbe3ee;
+      --text: #152238;
+      --muted: #5b6b82;
+      --primary: #1635a3;
+      --primary-2: #1f6feb;
+      --primary-soft: #e8f1ff;
+      --success: #12805c;
+      --success-soft: #e8f7f1;
+      --warn: #b56a00;
+      --warn-soft: #fff4e5;
+      --danger: #b42318;
+      --danger-soft: #fdeceb;
+      --neutral: #4c5f79;
+      --shadow: 0 10px 25px rgba(21,34,56,.08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #eff5ff 0%, var(--bg) 260px);
+    }
+    body { min-height: 100vh; }
+    button, input, select, textarea { font: inherit; }
+    .app {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(22,53,163,.98), rgba(21,34,56,.98));
+      color: white;
+      border-radius: 24px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 18px;
+    }
+    .hero-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+    }
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+    .brand-logo-wrap {
+      background: rgba(255,255,255,.98);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 20px;
+      padding: 12px 16px;
+      min-width: 220px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
+    }
+    .brand-logo {
+      display: block;
+      width: 185px;
+      height: auto;
+      object-fit: contain;
+    }
+    .brand-copy h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.08;
+      letter-spacing: -.02em;
+    }
+    .brand-copy p {
+      margin: 0;
+      color: rgba(255,255,255,.86);
+      font-size: 14px;
+      max-width: 820px;
+      line-height: 1.5;
+    }
+    .view-switch {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .view-btn, .button, .input-shell {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      min-height: 46px;
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(20,30,50,.03);
+    }
+    .view-btn, .button {
+      cursor: pointer;
+      padding: 0 16px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .view-btn.active, .button.primary {
+      background: white;
+      border-color: transparent;
+      color: var(--primary);
+      box-shadow: 0 10px 18px rgba(7,17,44,.14);
+    }
+    .view-btn:hover, .button:hover { transform: translateY(-1px); }
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,.11);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 96px;
+    }
+    .hero-stat .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: rgba(255,255,255,.72);
+    }
+    .hero-stat .value {
+      font-size: 24px;
+      font-weight: 900;
+      margin-top: 8px;
+    }
+    .hero-stat .hint {
+      margin-top: 6px;
+      color: rgba(255,255,255,.76);
+      font-size: 12px;
+    }
+    .toolbar {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+    .toolbar-search {
+      min-width: 0;
+    }
+    .toolbar-actions {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .toolbar-actions > * {
+      min-width: 0;
+    }
+    .field {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 0 14px;
+      color: var(--text);
+      outline: none;
+      box-shadow: 0 2px 6px rgba(20,30,50,.03);
+    }
+    .button.primary.alt {
+      background: var(--primary-2);
+      color: white;
+      border-color: transparent;
+      box-shadow: none;
+    }
+    .view {
+      display: none;
+      margin-top: 18px;
+    }
+    .view.active { display: block; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .panel-header {
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .panel-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+    .panel-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .panel-body {
+      padding: 16px 18px 18px;
+    }
+    .dashboard-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .dashboard-block {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .dashboard-head {
+      background: var(--primary);
+      color: white;
+      padding: 12px 16px;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -.01em;
+    }
+    .dashboard-body {
+      padding: 16px 16px 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    }
+    .dashboard-note {
+      font-style: italic;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .dashboard-footnote {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .coverage-table {
+      width: 100%;
+      min-width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+    .coverage-table th,
+    .coverage-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    .coverage-table th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      background: #f7f9fd;
+    }
+    .coverage-table tr:last-child td { border-bottom: none; }
+    .coverage-table .metric-name {
+      font-weight: 800;
+      font-size: 15px;
+    }
+    .coverage-table .metric-num {
+      font-weight: 800;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+    .coverage-table .metric-obj {
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .semaphore {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid rgba(0,0,0,.12);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.35);
+    }
+    .semaphore.success { background: #72b37e; }
+    .semaphore.warn { background: #e6c16a; }
+    .semaphore.danger { background: #e35d39; }
+    .target-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .target-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: var(--panel-soft);
+    }
+    .target-card .target-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 8px;
+    }
+    .target-card .target-foot {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .dashboard-double {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+    .table-shell {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+    }
+    .manager-table {
+      width: 100%;
+      min-width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+    .manager-table th,
+    .manager-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      line-height: 1.35;
+      vertical-align: middle;
+      text-align: left;
+      min-width: 0;
+    }
+    .manager-table th {
+      background: #f7f9fd;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .manager-table--compact th,
+    .manager-table--compact td {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .manager-table--compact .table-client {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .manager-table--compact .table-value {
+      font-weight: 800;
+    }
+    .manager-table tbody tr:hover { background: #f8fbff; }
+    .manager-table tbody tr.clickable { cursor: pointer; }
+    .manager-table tbody tr:last-child td { border-bottom: none; }
+    .table-number {
+      width: 40px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .stage-pill {
+      display: inline-flex;
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1;
+      border: 1px solid rgba(0,0,0,.06);
+      white-space: nowrap;
+    }
+    .stage-prospeccion { background: #f6d7db; color: #a11c2f; }
+    .stage-exploracion { background: #d4e4ff; color: #144a9b; }
+    .stage-propuesta { background: #f4e2b7; color: #8b5d06; }
+    .stage-negociacion { background: #f5d164; color: #694a00; }
+    .stage-cierre { background: #cfe9c5; color: #256a28; }
+    .stage-inicio { background: #cfeeed; color: #0a6d72; }
+    .stage-posventa { background: #ece1ff; color: #5f30a6; }
+    .status-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      color: white;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .status-dot.success { background: #72b37e; }
+    .status-dot.warn { background: #e0b85c; }
+    .status-dot.danger { background: #d45a43; }
+    .value-bar {
+      position: relative;
+      min-width: 110px;
+      height: 26px;
+      border-radius: 999px;
+      background: #edf3ff;
+      overflow: hidden;
+      border: 1px solid #d4e1ff;
+    }
+    .value-bar span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(31,111,235,.55), rgba(31,111,235,.18));
+      border-right: 1px solid rgba(31,111,235,.5);
+    }
+    .value-bar strong {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 13px;
+    }
+    .priority-box {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .summary-band {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--panel-soft);
+    }
+    .summary-card .label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .summary-card .value {
+      margin-top: 8px;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+    .summary-card .hint {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    #fichaSummaryBand {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    #fichaSummaryBand .summary-card {
+      padding: 12px;
+      min-width: 0;
+    }
+    #fichaSummaryBand .summary-card .label {
+      font-size: 11px;
+      letter-spacing: .04em;
+      line-height: 1.25;
+    }
+    #fichaSummaryBand .summary-card .value {
+      font-size: clamp(13px, 1.1vw, 16px);
+      line-height: 1.12;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+    #fichaSummaryBand .summary-card .hint {
+      font-size: 10px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
+    #fichasView .panel:first-child .panel-title {
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    #fichasView .panel:first-child .panel-subtitle {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .fichas-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .client-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: calc(100vh - 350px);
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .client-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      padding: 16px;
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+      box-shadow: 0 4px 10px rgba(21,34,56,.03);
+    }
+    .client-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(21,34,56,.08);
+      border-color: #bfd0ee;
+    }
+    .client-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 10px 24px rgba(31,111,235,.12);
+      background: linear-gradient(180deg, #fbfdff, #f4f8ff);
+    }
+    .card-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .card-name {
+      font-weight: 900;
+      font-size: 17px;
+      line-height: 1.15;
+    }
+    .card-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .pipeline {
+      min-width: 0;
+      max-width: 120px;
+      text-align: right;
+      font-weight: 900;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+    .pipeline small {
+      display: block;
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      white-space: nowrap;
+    }
+    .chip.primary { background: var(--primary-soft); color: var(--primary); border-color: #c7dbff; }
+    .chip.success { background: var(--success-soft); color: var(--success); border-color: #bee6d6; }
+    .chip.warn { background: var(--warn-soft); color: var(--warn); border-color: #f5d3aa; }
+    .chip.danger { background: var(--danger-soft); color: var(--danger); border-color: #f2b8b5; }
+    .chip.subtle { color: var(--muted); background: white; }
+    .card-body {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .metric {
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-height: 74px;
+      background: #fcfdff;
+    }
+    .metric .m-label { font-size: 12px; color: var(--muted); }
+    .metric .m-value { margin-top: 4px; font-weight: 700; font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; word-break: break-word; }
+    .detail-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .detail-hero {
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff, #f7faff);
+      border: 1px solid var(--line);
+    }
+    .detail-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .detail-name {
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1.05;
+      margin: 0 0 8px;
+      letter-spacing: -.02em;
+    }
+    .detail-desc {
+      color: var(--muted);
+      max-width: 880px;
+      font-size: 15px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+    .section-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      padding: 18px;
+      box-shadow: 0 5px 14px rgba(21,34,56,.04);
+    }
+    .section-card h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+    .section-card p {
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .section-hint {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: -4px;
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px 16px;
+    }
+    .info-item {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--panel-soft);
+      min-height: 96px;
+    }
+    .info-item .label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .info-item .value {
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .info-item .sub {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .edit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .edit-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+    .edit-card .edit-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .inline-input, .inline-select, .inline-textarea {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      background: white;
+      outline: none;
+      color: var(--text);
+    }
+    .inline-textarea {
+      min-height: 98px;
+      resize: vertical;
+      padding: 12px;
+    }
+    .mini-input {
+      width: 100%;
+      min-height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      background: white;
+      outline: none;
+      color: var(--text);
+    }
+    .stack { display: flex; flex-direction: column; gap: 10px; }
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .activity {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .activity input[type="checkbox"] {
+      margin-top: 4px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .activity.done {
+      background: var(--success-soft);
+      border-color: #bee6d6;
+    }
+    .activity-title {
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .activity-meta {
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .activity-row-grid {
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+    .activity-actions {
+      margin-top: 10px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .activity-textarea {
+      min-height: 84px;
+    }
+    .activity-badge {
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid var(--line);
+    }
+    .activity-badge-hecha, .activity-status-hecha { background: var(--success-soft); border-color:#bee6d6; color: var(--success); }
+    .activity-badge-retrasada, .activity-status-retrasada { background: var(--danger-soft); border-color:#f2b8b5; color: var(--danger); }
+    .activity-badge-por-iniciar, .activity-status-por-iniciar { background: #fff4e8; border-color:#f4c58a; color:#b56a00; }
+    .activity-badge-en-proceso, .activity-status-en-proceso { background: var(--warn-soft); border-color:#f5d3aa; color: var(--warn); }
+    .activity-history {
+      margin-top: 14px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      background: var(--panel-soft);
+    }
+    .activity-history summary { cursor:pointer; font-weight:800; }
+    .activity-history-list { margin-top:10px; display:flex; flex-direction:column; gap:10px; }
+    .flag-badge {
+      display:inline-flex; align-items:center; justify-content:center;
+      border-radius:999px; padding:7px 10px; font-size:12px; font-weight:800; white-space:nowrap;
+      border:1px solid transparent;
+    }
+    .flag-badge.success { background: var(--success-soft); color: var(--success); border-color:#bee6d6; }
+    .flag-badge.warn { background: var(--warn-soft); color: var(--warn); border-color:#f5d3aa; }
+    .flag-badge.danger { background: var(--danger-soft); color: var(--danger); border-color:#f2b8b5; }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+    }
+    .sub-table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+    }
+    .sub-table th,
+    .sub-table td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 14px;
+    }
+    .sub-table th {
+      background: #f6f9fd;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+    }
+    .sub-table tr:last-child td { border-bottom: none; }
+    .stakeholder-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .stakeholder-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fcfdff;
+    }
+    .stakeholder-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .stakeholder-head strong {
+      font-size: 14px;
+    }
+    .stakeholder-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .stake-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+    .value-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill-option {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px;
+      background: white;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .pill-option input {
+      accent-color: var(--primary);
+      margin: 0;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+    .pill-option.active {
+      background: var(--primary-soft);
+      border-color: #c7dbff;
+      color: var(--primary);
+    }
+    .small-button {
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: var(--primary-2);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0 14px;
+    }
+    .soft-button {
+      min-height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 12px;
+    }
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .score-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: var(--panel-soft);
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .score-item label {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.35;
+      cursor: pointer;
+    }
+    .score-item input {
+      margin-top: 2px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .score-total {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #f8fbff, #eff5ff);
+      border: 1px solid #d6e6ff;
+    }
+    .progress {
+      height: 10px;
+      background: #dfe9f7;
+      border-radius: 999px;
+      overflow: hidden;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .progress > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #5aa7ff);
+      border-radius: inherit;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .missing-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .tag-muted {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #f1f4f8;
+      border: 1px dashed #c9d4e3;
+      color: #506073;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .empty {
+      padding: 36px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+      background: var(--panel-soft);
+    }
+    .inline-empty {
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--panel-soft);
+    }
+    .muted-text {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .pill-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: #f4f8ff;
+      color: var(--primary);
+      border: 1px solid #cfe0ff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .brand-copy, .detail-copy, .client-card, .section-card, .detail-hero, .panel, .panel-body, .panel-header, .dashboard-body, .target-card, .summary-card, .metric, .info-item, .edit-card, .stakeholder-card, .todo-card, .alert-card {
+      min-width: 0;
+    }
+    .coverage-table th,
+    .coverage-table td,
+    .sub-table th,
+    .sub-table td {
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+    .card-top, .pipeline, .card-name, .card-sub, .detail-name, .detail-desc, .hero-stat .value, .summary-card .value, .metric .m-value, .info-item .value {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .panel { overflow: hidden; }
+    .detail-hero {
+      padding: 24px;
+    }
+    .detail-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .detail-kpis {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .detail-kpi {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff, #f6f9ff);
+      padding: 16px;
+    }
+    .detail-kpi .label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .detail-kpi .value {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .detail-kpi .sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .detail-grid.compact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .client-card {
+      padding: 18px;
+    }
+    .client-card .metric {
+      min-height: 82px;
+    }
+    .stakeholder-grid {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      align-items: start;
+    }
+    .stakeholder-card {
+      min-width: 0;
+      overflow: hidden;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+    .stakeholder-meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stakeholder-contact {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .stakeholder-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .stakeholder-section {
+      padding-top: 12px;
+      border-top: 1px solid #e8eef6;
+    }
+    .stakeholder-section:first-of-type {
+      padding-top: 0;
+      border-top: none;
+    }
+    .stakeholder-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      min-width: 0;
+    }
+    .stakeholder-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .stakeholder-inline .stake-label {
+      margin: 0;
+    }
+    .todo-list,
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .todo-card,
+    .alert-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fcfdff;
+    }
+    .todo-top,
+    .alert-top {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) minmax(170px, 220px) auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .todo-check {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .todo-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      white-space: nowrap;
+    }
+    .todo-card.done {
+      background: var(--success-soft);
+      border-color: #bee6d6;
+    }
+    .todo-card.done textarea {
+      text-decoration: line-through;
+      color: #49655d;
+    }
+    .alert-card {
+      border-left: 6px solid transparent;
+    }
+    .alert-card.risk-alto {
+      background: #fff2f0;
+      border-color: #f2c7c2;
+      border-left-color: #b42318;
+    }
+    .alert-card.risk-medio {
+      background: #fff9e8;
+      border-color: #f4df93;
+      border-left-color: #d4a100;
+    }
+    .alert-card.risk-bajo {
+      background: #fff4e8;
+      border-color: #f2cf9c;
+      border-left-color: #d97a00;
+    }
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .risk-badge.alto {
+      color: #8b1e16;
+      background: #fdeceb;
+      border-color: #f2b8b5;
+    }
+    .risk-badge.medio {
+      color: #7c5b00;
+      background: #fff4cf;
+      border-color: #efd879;
+    }
+    .risk-badge.bajo {
+      color: #8a4d00;
+      background: #ffe7c7;
+      border-color: #f4c58a;
+    }
+    .summary-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .summary-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .46);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+.modal-backdrop.open { display: flex; }
+.modal-card {
+  width: min(1120px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  background: white;
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px rgba(15, 23, 42, .22);
+}
+.modal-head {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 3;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.modal-body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.modal-grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.form-block {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  background: #fbfdff;
+}
+.form-block h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.form-help {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.closure-box {
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff;
+}
+.status-chip-closed { background: var(--danger-soft); color: var(--danger); border-color: #f2b8b5; }
+.status-chip-open { background: var(--success-soft); color: var(--success); border-color: #bee6d6; }
+
+
+    .business-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(21,34,56,.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 50;
+    }
+    .business-modal.open { display: flex; }
+    .business-modal-shell {
+      width: min(1120px, 100%);
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 24px 60px rgba(21,34,56,.22);
+    }
+    .business-modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .business-modal-title {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+    .business-modal-body { padding: 20px; }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hide-print { }
+    @media (max-width: 1360px) {
+      .toolbar-actions {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .fichas-layout { grid-template-columns: minmax(280px, 320px) minmax(0, 1fr); }
+      .score-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .hero-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .dashboard-double { grid-template-columns: 1fr; }
+      .stakeholder-grid { grid-template-columns: 1fr; }
+      .summary-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .detail-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .detail-grid.compact, .summary-split { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 1080px) {
+      .app { padding: 14px; }
+      .hero-top { grid-template-columns: 1fr; }
+      .view-switch { justify-content: flex-start; }
+      .toolbar-actions { grid-template-columns: 1fr; }
+      .fichas-layout { grid-template-columns: 1fr; }
+      .client-list { max-height: none; }
+      .detail-grid, .detail-kpis, .info-grid, .summary-band, .score-grid, .target-grid, .edit-grid, .todo-top, .alert-top, .stakeholder-meta, .stakeholder-contact, .stakeholder-row {
+        grid-template-columns: 1fr;
+      }
+      .detail-top { grid-template-columns: 1fr; }
+      .hero-meta { grid-template-columns: 1fr; }
+      .brand-lockup { flex-direction: column; align-items: flex-start; }
+      .brand-logo-wrap { min-width: 0; }
+    }
+    @media print {
+      body { background: white; }
+      .toolbar,
+      .view-switch,
+      .detail-actions,
+      .hide-print,
+      .panel-header .button,
+      .soft-button,
+      .small-button,
+      .priority-box,
+      input[type="checkbox"] + span {
+        display: none !important;
+      }
+      .app { max-width: none; padding: 0; }
+      .panel, .section-card, .detail-hero, .hero, .dashboard-block {
+        box-shadow: none;
+      }
+      .view { display: none !important; }
+      .view.active { display: block !important; }
+      .fichas-layout { grid-template-columns: 1fr; }
+      .client-list { max-height: none; overflow: visible; }
+      .client-card:not(.active) { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="brand-lockup">
+          <div class="brand-logo-wrap">
+            <img class="brand-logo" alt="Clínicos" src="data:image/png;base64,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" />
+          </div>
+          <div class="brand-copy">
+            <h1>Pipeline comercial</h1>
+            <p>Vista ejecutiva y detallada por cliente.</p>
+          </div>
+        </div>
+        <div class="view-switch hide-print">
+          <button class="view-btn" data-view-btn="dashboard">Vista gerencial</button>
+          <button class="view-btn" data-view-btn="fichas">Fichas de clientes</button>
+        </div>
+      </div>
+
+      <div class="hero-meta">
+        <div class="hero-stat">
+          <div class="label">Negocios cargados</div>
+          <div class="value" id="heroClientes">0</div>
+          <div class="hint">Base consolidada de ADF y No ADF</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Pipeline total</div>
+          <div class="value" id="heroPipeline">$0</div>
+          <div class="hint">Suma del valor pipeline mensual</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Valor ponderado</div>
+          <div class="value" id="heroPonderado">$0</div>
+          <div class="hint">Suma de valor × % de probabilidad</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Negocios en riesgo</div>
+          <div class="value" id="heroRiesgo">0</div>
+          <div class="hint">En riesgo + crítico según etapa actual</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Priorizados</div>
+          <div class="value" id="heroPriorizados">0</div>
+          <div class="hint">Marcados para conversación gerencial</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar hide-print">
+      <div class="toolbar-search">
+        <input id="searchInput" class="field" type="search" placeholder="Buscar por cliente, producto, responsable, región, stakeholder..." />
+      </div>
+      <div class="toolbar-actions">
+        <select id="tipoFilter" class="field"></select>
+        <select id="subtipoFilter" class="field"></select>
+        <select id="etapaFilter" class="field"></select>
+        <select id="riesgoFilter" class="field"></select>
+        <select id="sortBy" class="field"></select>
+        <button class="button" id="clearFiltersBtn">Limpiar filtros</button>
+        <button class="button primary alt" id="printBtn">Imprimir / guardar PDF</button>
+        <button class="button primary alt" id="newBusinessBtn">+ Nuevo negocio</button>
+      </div>
+    </section>
+
+    <section id="dashboardView" class="view active">
+      <div class="dashboard-grid">
+        <section class="dashboard-block">
+          <div class="dashboard-head">Cobertura de Pipeline</div>
+          <div class="dashboard-body">
+            <div class="dashboard-note">¿Tenemos suficiente cobertura para cumplir nuestros objetivos?</div>
+            <div class="table-shell">
+              <table class="coverage-table">
+                <thead>
+                  <tr>
+                    <th>Indicador</th>
+                    <th>Valor actual</th>
+                    <th>Meta mes</th>
+                    <th>Cobertura</th>
+                    <th>Objetivo</th>
+                    <th>Semáforo</th>
+                  </tr>
+                </thead>
+                <tbody id="coverageTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="target-grid hide-print">
+              <div class="target-card">
+                <div class="target-label">Meta mes total</div>
+                <input class="mini-input" type="number" min="0" step="1" data-target-key="total" />
+                <div class="target-foot">Valor en millones de COP</div>
+              </div>
+              <div class="target-card">
+                <div class="target-label">Meta mes ADF</div>
+                <input class="mini-input" type="number" min="0" step="1" data-target-key="adf" />
+                <div class="target-foot">Valor en millones de COP</div>
+              </div>
+              <div class="target-card">
+                <div class="target-label">Meta mes No ADF</div>
+                <input class="mini-input" type="number" min="0" step="1" data-target-key="noadf" />
+                <div class="target-foot">Valor en millones de COP</div>
+              </div>
+            </div>
+
+            <div class="dashboard-footnote">
+              El valor actual toma el pipeline mensual cargado en la herramienta. Las metas se pueden ajustar localmente para adaptar la vista gerencial al presupuesto o al comité.
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-block">
+          <div class="dashboard-head">Radar general del pipeline</div>
+          <div class="dashboard-body">
+            <div class="summary-band" id="summaryBand"></div>
+          </div>
+        </section>
+
+        <div class="dashboard-double">
+          <section class="dashboard-block">
+            <div class="dashboard-head">Top negociaciones | ADF</div>
+            <div class="dashboard-body">
+              <div class="table-shell">
+                <table class="manager-table manager-table--compact">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Etapa</th>
+                      <th>Probabilidad</th>
+                      <th>Valor</th>
+                      <th>Estado</th>
+                      <th>Priorizado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="topAdfBody"></tbody>
+                </table>
+              </div>
+              <div class="dashboard-footnote">Si una oportunidad no tiene fecha del próximo hito o la etapa está vencida, el estado de etapa se resalta con mayor severidad.</div>
+            </div>
+          </section>
+
+          <section class="dashboard-block">
+            <div class="dashboard-head">Top negociaciones | No ADF</div>
+            <div class="dashboard-body">
+              <div class="table-shell">
+                <table class="manager-table manager-table--compact">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Etapa</th>
+                      <th>Probabilidad</th>
+                      <th>Valor</th>
+                      <th>Estado</th>
+                      <th>Priorizado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="topNoAdfBody"></tbody>
+                </table>
+              </div>
+              <div class="dashboard-footnote">La casilla de priorización se guarda localmente para preparar la conversación gerencial.</div>
+            </div>
+          </section>
+        </div>
+
+        <section class="dashboard-block">
+          <div class="dashboard-head">Resumen simultáneo de todos los negocios</div>
+          <div class="dashboard-body">
+            <div class="table-shell">
+              <table class="manager-table">
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Subtipo</th>
+                    <th>Cliente</th>
+                    <th>Etapa</th>
+                    <th>Probabilidad</th>
+                    <th>Valor pipeline</th>
+                    <th>Días etapa</th>
+                    <th>Último contacto</th>
+                    <th>Dueño</th>
+                    <th>TO DO</th>
+                    <th>Fichas</th>
+                  </tr>
+                </thead>
+                <tbody id="allDealsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="fichasView" class="view">
+      <div class="fichas-layout">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Resumen y listado</h2>
+              <div class="panel-subtitle">Filtros dinámicos para presentar solo lo relevante en comité y abrir la ficha detallada.</div>
+            </div>
+            <button class="button hide-print" data-view-btn="dashboard">Ir a vista gerencial</button>
+          </div>
+          <div class="panel-body">
+            <div class="summary-band" id="fichaSummaryBand"></div>
+
+            <div class="row-actions hide-print" style="margin:16px 0 12px; justify-content:space-between;">
+              <div class="panel-subtitle" id="listMeta">Mostrando 0 oportunidades</div>
+            </div>
+            <div class="legend" style="margin-bottom:12px;">
+              <span class="chip success">En tiempo</span>
+              <span class="chip warn">En riesgo</span>
+              <span class="chip danger">Crítico</span>
+            </div>
+
+            <div class="client-list" id="clientList"></div>
+            <div id="noResults" class="empty" style="display:none;">No hay oportunidades que coincidan con los filtros actuales.</div>
+
+            <div class="footer-note">
+              Tip: la ficha permite complementar población, stakeholders, TO DO, alertas de riesgo, salud del deal y priorización para comité. Los cambios se calculan automáticamente y se sincronizan con la base compartida cuando Supabase está configurado.
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Ficha del cliente</h2>
+              <div class="panel-subtitle">Selecciona una oportunidad del panel izquierdo o desde la vista gerencial.</div>
+            </div>
+          </div>
+          <div class="panel-body" id="detailPanel">
+            <div class="empty">
+              <div style="font-size:42px; margin-bottom:8px;">📌</div>
+              Selecciona un cliente para abrir su ficha técnica comercial.
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+
+
+  <div class="business-modal hide-print" id="businessModal" aria-hidden="true">
+    <div class="business-modal-shell">
+      <div class="business-modal-header">
+        <div>
+          <h3 class="business-modal-title" id="businessModalTitle">Nuevo negocio</h3>
+          <div class="panel-subtitle">Crea o edita negocios sin salir de la herramienta.</div>
+        </div>
+        <button class="button" type="button" id="closeBusinessModalBtn">Cerrar</button>
+      </div>
+      <div class="business-modal-body" id="businessFormContainer"></div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    const PIPELINE_CONFIG = window.PIPELINE_CONFIG || {};
+    const BASE_CLIENTS = [{"id": "adf-sanitas", "nombre": "EPS Sanitas", "razonSocial": "EPS Sanitas", "tipoNegocio": "ADF", "subtipo": "Tier 1", "producto": "ADF", "region": "Bogotá D.C. / Cundinamarca", "departamentosCiudades": "Bogotá D.C. / Cundinamarca", "duenoNegocio": "Marco Montes", "etapa": "Exploración", "probabilidad": 15, "diasEtapa": 21, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "18/03/2026", "diasSinContacto": 16, "alertaContacto": "16 días sin contacto", "valorPipeline": 113250000, "estadoActual": "Socialización del modelo", "estadoGeneral": "Pendiente de concretar socialización del modelo con decisores de Sanitas.", "proximoHito": "Reunión con Jerson Flores para socializar el modelo y validar interés.", "fechaHito": "", "responsableHito": "Marco Montes", "poblacionObjetivo": null, "avanceUltimaSemana": ["Reunión efectiva con Jerson Flores (VP Salud Sanitas) – 11 marzo 2026"], "actividades": ["Concretar reunión con Jerson para socializar modelo y validar interés", "Reunión con Gerente de Redes", "Preparar material para reunión"], "responsables": ["Marco Montes", "Karen Castellanos"], "stakeholders": [{"nombre": "Jerson Flores", "cargo": "VP Salud Sanitas"}, {"nombre": "Gerente de Redes", "cargo": "No informado"}], "flag": "En riesgo"}, {"id": "adf-compensar", "nombre": "Compensar EPS", "razonSocial": "Compensar EPS", "tipoNegocio": "ADF", "subtipo": "Tier 1", "producto": "ADF", "region": "Bogotá D.C. / Cundinamarca", "departamentosCiudades": "Bogotá D.C. / Cundinamarca", "duenoNegocio": "Marco Montes", "etapa": "Negociación", "probabilidad": 30, "diasEtapa": 63, "alertaEtapa": "muy por encima del objetivo de 30 días", "ultimoContacto": "30/03/2026", "diasSinContacto": 8, "alertaContacto": "8 días sin contacto", "valorPipeline": 128581358, "estadoActual": "Revisión técnica de la EPS y CLÍNICOS", "estadoGeneral": "La oportunidad está en mesa técnica y necesita destrabar definiciones de costos e inclusiones.", "proximoHito": "Reunión de socialización del análisis de costos y continuación de mesa técnica.", "fechaHito": "13/04/2026", "responsableHito": "Marco Montes", "poblacionObjetivo": null, "avanceUltimaSemana": ["Revisión técnica y definiciones internas"], "actividades": ["Agendar reunión de socialización de análisis de costos", "Continuar mesa técnica", "Revisión técnica de inclusiones y población", "Preparar material y discurso comercial", "Revisión técnica conjunta con Compensar", "Nueva reunión programada para 13 de abril"], "responsables": ["Marco Montes", "Karen Castellanos", "Camila T", "Compensar EPS"], "stakeholders": [], "flag": "Crítico"}, {"id": "adf-famisanar", "nombre": "Famisanar", "razonSocial": "Famisanar", "tipoNegocio": "ADF", "subtipo": "Tier 1", "producto": "ADF", "region": "Bogotá D.C. / Cundinamarca", "departamentosCiudades": "Bogotá D.C. / Cundinamarca", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 5, "diasEtapa": 28, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "31/03/2026", "diasSinContacto": 7, "alertaContacto": "7 días sin contacto", "valorPipeline": 35461909, "estadoActual": "Envío de presentación (PPT)", "estadoGeneral": "Conversaciones activadas con actores de la EPS, pero faltan contactos clave y reunión de presentación.", "proximoHito": "Identificar contactos clave y gestionar reunión de presentación.", "fechaHito": "", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Activación de conversaciones con diferentes actores de la EPS", "Confirmación de recepción de información"], "actividades": ["Identificar contactos clave", "Enviar presentación inicial", "Gestionar reunión de presentación"], "responsables": ["Jennifer Restrepo"], "stakeholders": [], "flag": "En riesgo"}, {"id": "adf-capitalsalud", "nombre": "Capital Salud EPS", "razonSocial": "Capital Salud EPS", "tipoNegocio": "ADF", "subtipo": "Tier 1", "producto": "ADF", "region": "Bogotá D.C. / Cundinamarca", "departamentosCiudades": "Bogotá D.C. / Cundinamarca", "duenoNegocio": "Karen Castellanos", "etapa": "Negociación", "probabilidad": 30, "diasEtapa": 107, "alertaEtapa": "críticamente por encima del objetivo de 30 días", "ultimoContacto": "10/03/2026", "diasSinContacto": 22, "alertaContacto": "22 días sin contacto", "valorPipeline": 160101900, "estadoActual": "Reunión programada", "estadoGeneral": "Oportunidad atascada por múltiples reprogramaciones; requiere presión comercial y definición del piloto.", "proximoHito": "Concretar reunión con Jorge Ceballos y socializar metodología del piloto.", "fechaHito": "", "responsableHito": "Karen Castellanos", "poblacionObjetivo": null, "avanceUltimaSemana": ["Sin avances"], "actividades": ["Concretar reunión con Jorge Ceballos (reprogramada múltiples veces)", "Generar presión comercial a través de Marcela Brun", "Socializar metodología del piloto", "Definir fechas de inicio y ajustes del piloto"], "responsables": ["Karen Castellanos", "Marco Montes", "Camila Tobar"], "stakeholders": [{"nombre": "Jorge Ceballos", "cargo": "No informado"}, {"nombre": "Marcela Brun", "cargo": "No informado"}], "flag": "Crítico"}, {"id": "adf-nuevaeps", "nombre": "Nueva EPS", "razonSocial": "Nueva EPS", "tipoNegocio": "ADF", "subtipo": "Tier 1", "producto": "ADF", "region": "Bogotá D.C. / Cundinamarca", "departamentosCiudades": "Bogotá D.C. / Cundinamarca", "duenoNegocio": "Marco Montes", "etapa": "Exploración", "probabilidad": 5, "diasEtapa": 33, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "27/03/2026", "diasSinContacto": 9, "alertaContacto": "9 días sin contacto", "valorPipeline": 20664854, "estadoActual": "Ajuste de modelo", "estadoGeneral": "Hay interés inicial, pero falta reunión clave y ajuste del modelo de atención.", "proximoHito": "Concretar reunión con Layla y definir siguientes pasos.", "fechaHito": "", "responsableHito": "Marco Montes", "poblacionObjetivo": null, "avanceUltimaSemana": ["Reunión efectiva"], "actividades": ["Concretar reunión con Layla", "Preparar material", "Ejecutar reunión y definir siguientes pasos", "Ajustar modelo de atención"], "responsables": ["Marco Montes", "Karen Castellanos", "Camila Tobar"], "stakeholders": [{"nombre": "Layla", "cargo": "No informado"}], "flag": "En riesgo"}, {"id": "adf-sura", "nombre": "EPS SURA", "razonSocial": "EPS SURA", "tipoNegocio": "ADF", "subtipo": "Tier 2", "producto": "ADF", "region": "Bogotá D.C. / Cundinamarca", "departamentosCiudades": "Bogotá D.C. / Cundinamarca", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 1, "diasEtapa": 7, "alertaEtapa": "dentro del objetivo de 22 días", "ultimoContacto": "30/03/2026", "diasSinContacto": 8, "alertaContacto": "8 días sin contacto", "valorPipeline": 2057981, "estadoActual": "Envío de presentación (PPT)", "estadoGeneral": "Prospecto en etapa temprana con identificación de contactos.", "proximoHito": "Lograr contacto y programar reunión con decisores comerciales.", "fechaHito": "", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Identificación de contactos"], "actividades": ["Contacto con Jorge Charris (Director Comercial) y Horacio Piedrahita (Gerente regional)", "Programación de reunión"], "responsables": ["Jennifer Restrepo"], "stakeholders": [{"nombre": "Jorge Charris", "cargo": "Director Comercial"}, {"nombre": "Horacio Piedrahita", "cargo": "Gerente regional"}], "flag": "En tiempo"}, {"id": "adf-saludtotal-bogota", "nombre": "Salud Total EPS (Bogotá)", "razonSocial": "Salud Total EPS", "tipoNegocio": "ADF", "subtipo": "Tier 2", "producto": "ADF", "region": "Bogotá D.C. / Cundinamarca", "departamentosCiudades": "Bogotá D.C. / Cundinamarca", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 1, "diasEtapa": 7, "alertaEtapa": "dentro del objetivo de 22 días", "ultimoContacto": "30/03/2026", "diasSinContacto": 8, "alertaContacto": "8 días sin contacto", "valorPipeline": 5102433, "estadoActual": "Envío de presentación (PPT)", "estadoGeneral": "Prospecto en avance inicial con reunión en gestión.", "proximoHito": "Programación de reunión con Luz Elena Jaramillo.", "fechaHito": "09/04/2026", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Identificación de contactos"], "actividades": ["Contacto con Luz Elena Jaramillo (VP de red)", "Programación de reunión (pendiente confirmación para 9 de abril)"], "responsables": ["Jennifer Restrepo"], "stakeholders": [{"nombre": "Luz Elena Jaramillo", "cargo": "VP de red"}], "flag": "En tiempo"}, {"id": "adf-saludtotal-bolivar", "nombre": "Salud Total EPS (Bolívar)", "razonSocial": "Salud Total EPS", "tipoNegocio": "ADF", "subtipo": "Tier 2", "producto": "ADF", "region": "Bolívar", "departamentosCiudades": "Bolívar", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 1, "diasEtapa": 7, "alertaEtapa": "dentro del objetivo", "ultimoContacto": "Sin registro", "diasSinContacto": null, "alertaContacto": "Sin registro", "valorPipeline": 1156551, "estadoActual": "Sin contacto", "estadoGeneral": "Prospecto aún sin contacto registrado.", "proximoHito": "Encontrar contacto clave para apertura comercial.", "fechaHito": "", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Sin avances"], "actividades": ["Búsqueda de contacto"], "responsables": ["Jennifer Restrepo"], "stakeholders": [], "flag": "En tiempo"}, {"id": "adf-mutualser", "nombre": "Mutual SER", "razonSocial": "Mutual SER", "tipoNegocio": "ADF", "subtipo": "Tier 2", "producto": "ADF", "region": "Bolívar", "departamentosCiudades": "Bolívar", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 1, "diasEtapa": 7, "alertaEtapa": "dentro del objetivo", "ultimoContacto": "Sin registro", "diasSinContacto": null, "alertaContacto": "Sin registro", "valorPipeline": 3146500, "estadoActual": "Sin contacto", "estadoGeneral": "Prospecto en etapa temprana sin avance registrado.", "proximoHito": "Encontrar contacto clave para apertura comercial.", "fechaHito": "", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Sin avances"], "actividades": ["Búsqueda de contacto"], "responsables": ["Jennifer Restrepo"], "stakeholders": [], "flag": "En tiempo"}, {"id": "adf-coosalud", "nombre": "Coosalud EPS", "razonSocial": "Coosalud EPS", "tipoNegocio": "ADF", "subtipo": "Tier 2", "producto": "ADF", "region": "Bolívar", "departamentosCiudades": "Bolívar", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 3, "diasEtapa": 14, "alertaEtapa": "dentro del objetivo de 22 días", "ultimoContacto": "31/03/2026", "diasSinContacto": 7, "alertaContacto": "7 días sin contacto", "valorPipeline": 3775800, "estadoActual": "Envío de presentación (PPT)", "estadoGeneral": "Prospecto con contactos identificados y pendiente de reunión.", "proximoHito": "Programar reunión con el área de contratación.", "fechaHito": "", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Identificación de contactos"], "actividades": ["Contacto con Mauricio Molina (Gerente de Contratación) y Jhon Zanabria (Analista de contratación)", "Programación de reunión"], "responsables": ["Jennifer Restrepo"], "stakeholders": [{"nombre": "Mauricio Molina", "cargo": "Gerente de Contratación"}, {"nombre": "Jhon Zanabria", "cargo": "Analista de contratación"}], "flag": "En tiempo"}, {"id": "adf-nuevaeps-bolivar", "nombre": "Nueva EPS (Bolívar)", "razonSocial": "Nueva EPS", "tipoNegocio": "ADF", "subtipo": "Tier 2", "producto": "ADF", "region": "Bolívar", "departamentosCiudades": "Bolívar", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 1, "diasEtapa": 7, "alertaEtapa": "dentro del objetivo", "ultimoContacto": "Sin registro", "diasSinContacto": null, "alertaContacto": "Sin registro", "valorPipeline": 1071511, "estadoActual": "Sin contacto", "estadoGeneral": "Prospecto sin contacto ni avance registrado.", "proximoHito": "Encontrar contacto clave para apertura comercial.", "fechaHito": "", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Sin avances"], "actividades": ["Búsqueda de contacto"], "responsables": ["Jennifer Restrepo"], "stakeholders": [], "flag": "En tiempo"}, {"id": "adf-cajacopi", "nombre": "Cajacopi EPS", "razonSocial": "Cajacopi EPS", "tipoNegocio": "ADF", "subtipo": "Tier 2", "producto": "ADF", "region": "Bolívar", "departamentosCiudades": "Bolívar", "duenoNegocio": "Jennifer Restrepo", "etapa": "Prospección", "probabilidad": 1, "diasEtapa": 7, "alertaEtapa": "dentro del objetivo", "ultimoContacto": "Sin registro", "diasSinContacto": null, "alertaContacto": "Sin registro", "valorPipeline": 578276, "estadoActual": "Sin contacto", "estadoGeneral": "Prospecto sin contacto y aún en búsqueda de entrada comercial.", "proximoHito": "Encontrar contacto clave para apertura comercial.", "fechaHito": "", "responsableHito": "Jennifer Restrepo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Sin avances"], "actividades": ["Búsqueda de contacto"], "responsables": ["Jennifer Restrepo"], "stakeholders": [], "flag": "En tiempo"}, {"id": "noadf-arl-colsanitas", "nombre": "ARL Colsanitas", "razonSocial": "ARL Colsanitas", "tipoNegocio": "No ADF", "subtipo": "PAI", "producto": "Reincorporación laboral", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Lina Durán", "etapa": "Cierre", "probabilidad": 90, "diasEtapa": 56, "alertaEtapa": "supera objetivo de 30 días", "ultimoContacto": "30/03/2026", "diasSinContacto": 8, "alertaContacto": "8 días sin contacto", "valorPipeline": 225000000, "estadoActual": "Cierre contractual", "estadoGeneral": "Oportunidad avanzada; faltan mesas de alineación y envío del contrato para cerrar.", "proximoHito": "Seguimiento al envío de contrato por parte de ARL Colsanitas.", "fechaHito": "", "responsableHito": "Lina Durán", "poblacionObjetivo": null, "avanceUltimaSemana": ["Ejecución de primera mesa técnica"], "actividades": ["Mesas de alineación operativa y de modelo", "Capacitación de facturación y autorizaciones", "Programación de próximas mesas", "Seguimiento a envío de contrato por parte de ARL Colsanitas"], "responsables": ["Lina Durán (Comercial)"], "stakeholders": [], "flag": "En riesgo"}, {"id": "noadf-nuevaeps-epoc", "nombre": "Nueva EPS", "razonSocial": "Nueva EPS", "tipoNegocio": "No ADF", "subtipo": "PAI", "producto": "EPOC severo y muy severo", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Marcy Merchán", "etapa": "Propuesta", "probabilidad": 35, "diasEtapa": 35, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "26/02/2026", "diasSinContacto": 30, "alertaContacto": "30 días sin contacto – crítico", "valorPipeline": 63000000, "estadoActual": "Visto bueno del modelo por parte del cliente", "estadoGeneral": "El modelo fue aceptado, pero la propuesta necesita cierre financiero y confirmación de población.", "proximoHito": "Enviar nueva propuesta comercial con análisis financiero actualizado.", "fechaHito": "", "responsableHito": "Alex Rozo", "poblacionObjetivo": 300, "avanceUltimaSemana": ["Aceptación de ajuste del modelo PGP respiratorio", "Voluntad de entrega inicial de 300 pacientes"], "actividades": ["Revisión de frecuencias y servicios", "Análisis financiero", "Confirmación de atención de 300 pacientes", "Envío de nueva propuesta comercial"], "responsables": ["Marcy Merchán (PAI)", "Alex Rozo (Comercial)", "Karen Castellanos (Comercial)"], "stakeholders": [], "flag": "Crítico"}, {"id": "noadf-compensar-neuro", "nombre": "Compensar EPS", "razonSocial": "Compensar EPS", "tipoNegocio": "No ADF", "subtipo": "PAI", "producto": "Modelo neurología", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Marcy Merchán", "etapa": "Exploración", "probabilidad": 15, "diasEtapa": 29, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "26/03/2026", "diasSinContacto": 10, "alertaContacto": "10 días sin contacto", "valorPipeline": 125250000, "estadoActual": "Alineación con expectativas del cliente", "estadoGeneral": "Hay visto bueno del modelo; el siguiente paso es estructurar propuesta y modalidad de contratación.", "proximoHito": "Agendar reunión y definir modelo de contratación.", "fechaHito": "", "responsableHito": "Marco Montes", "poblacionObjetivo": null, "avanceUltimaSemana": ["Visto bueno del modelo por parte del cliente"], "actividades": ["Agendar reunión", "Revisar inclusiones y frecuencias", "Definir modelo de contratación", "Elaborar propuesta comercial"], "responsables": ["Marcy Merchán (PAI)", "Camila Tobar (Producto)", "Marco Montes (Comercial)", "Karen Castellanos (Comercial)"], "stakeholders": [], "flag": "En riesgo"}, {"id": "noadf-mundial-casamundial", "nombre": "Seguros Mundial", "razonSocial": "Seguros Mundial", "tipoNegocio": "No ADF", "subtipo": "RDP", "producto": "Casa Mundial", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Lina Durán", "etapa": "Prospección", "probabilidad": 5, "diasEtapa": 20, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "25/03/2026", "diasSinContacto": 11, "alertaContacto": "11 días sin contacto", "valorPipeline": 15000000, "estadoActual": "Identificación de necesidad", "estadoGeneral": "La necesidad está identificada y ya hay cita próxima para validar viabilidad.", "proximoHito": "Cita del 9 de abril y seguimiento a información poblacional.", "fechaHito": "09/04/2026", "responsableHito": "Lina Durán", "poblacionObjetivo": null, "avanceUltimaSemana": ["Cita agendada para el 9 de abril"], "actividades": ["Seguimiento a envío de información poblacional y frecuencias de uso", "Evaluación de viabilidad"], "responsables": ["Lina Durán (Comercial)"], "stakeholders": [], "flag": "En riesgo"}, {"id": "noadf-ecopetrol-pami", "nombre": "Ecopetrol", "razonSocial": "Ecopetrol", "tipoNegocio": "No ADF", "subtipo": "RDP", "producto": "PAMI", "region": "Bucaramanga", "departamentosCiudades": "Bucaramanga", "duenoNegocio": "Lina Durán", "etapa": "Prospección", "probabilidad": 5, "diasEtapa": 20, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "06/03/2026", "diasSinContacto": 24, "alertaContacto": "24 días sin contacto – alto riesgo", "valorPipeline": 35000000, "estadoActual": "Identificación de necesidad", "estadoGeneral": "Necesidad identificada, pero la oportunidad está expuesta por falta de cita con el coordinador local.", "proximoHito": "Concretar cita con Coordinador de Salud Bucaramanga.", "fechaHito": "", "responsableHito": "Lina Durán", "poblacionObjetivo": null, "avanceUltimaSemana": ["Solicitud de cita"], "actividades": ["Concretar cita con Coordinador de Salud Bucaramanga"], "responsables": ["Lina Durán (Comercial)"], "stakeholders": [{"nombre": "Coordinador de Salud Bucaramanga", "cargo": "No informado"}], "flag": "En riesgo"}, {"id": "noadf-cenit", "nombre": "CENIT", "razonSocial": "CENIT", "tipoNegocio": "No ADF", "subtipo": "RDP", "producto": "Redes de prestación", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Lina Durán", "etapa": "Prospección", "probabilidad": 5, "diasEtapa": 3, "alertaEtapa": "dentro del objetivo de 15 días", "ultimoContacto": "31/03/2026", "diasSinContacto": 7, "alertaContacto": "7 días sin contacto", "valorPipeline": 12500000, "estadoActual": "Identificación de necesidad", "estadoGeneral": "Oportunidad temprana con intención presentada y seguimiento a invitación.", "proximoHito": "Seguimiento a la invitación del concurso.", "fechaHito": "", "responsableHito": "Lina Durán", "poblacionObjetivo": null, "avanceUltimaSemana": ["Diligenciamiento de formulario de intención para participar"], "actividades": ["Seguimiento a la invitación del concurso"], "responsables": ["Lina Durán (Comercial)"], "stakeholders": [], "flag": "En tiempo"}, {"id": "noadf-capitalsalud-renego", "nombre": "Capital Salud EPS", "razonSocial": "Capital Salud EPS", "tipoNegocio": "No ADF", "subtipo": "Renegociación", "producto": "Renegociación contrato", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Marco Montes", "etapa": "Cierre", "probabilidad": 90, "diasEtapa": 26, "alertaEtapa": "supera objetivo de 15 días", "ultimoContacto": "02/03/2026", "diasSinContacto": 28, "alertaContacto": "28 días sin contacto – alto riesgo", "valorPipeline": 331486854, "estadoActual": "Cierre contractual", "estadoGeneral": "Renegociación en cierre, pero con alta exposición por silencio del cliente y múltiples frentes abiertos.", "proximoHito": "Recibir, revisar y firmar el otrosí.", "fechaHito": "", "responsableHito": "Karen Castellanos", "poblacionObjetivo": null, "avanceUltimaSemana": ["Inicio de mesa de negociación de servicios y frecuencias para cambio estructural del contrato"], "actividades": ["Seguimiento al envío de otrosí", "Revisión y firma de otrosí", "Mesas de negociación para ajuste estructural", "Envío de propuesta de nuevos servicios y frecuencias", "Cierre de renegociación"], "responsables": ["Marco Montes (Comercial)", "Marcy Merchán (PAI)", "Karen Castellanos (Comercial)"], "stakeholders": [], "flag": "En riesgo"}, {"id": "noadf-compensar-tarifas", "nombre": "Compensar EPS", "razonSocial": "Compensar EPS", "tipoNegocio": "No ADF", "subtipo": "Renegociación", "producto": "Incremento tarifas", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Alex Rozo", "etapa": "Cierre", "probabilidad": 90, "diasEtapa": 29, "alertaEtapa": "dentro del objetivo de 30 días", "ultimoContacto": "03/03/2026", "diasSinContacto": 27, "alertaContacto": "27 días sin contacto – alto riesgo", "valorPipeline": 27000000, "estadoActual": "Negociación de tarifas", "estadoGeneral": "El cliente aceptó el incremento, falta convertir aceptación en legalización contractual.", "proximoHito": "Enviar carta de aceptación y avanzar legalización contractual.", "fechaHito": "", "responsableHito": "Alex Rozo", "poblacionObjetivo": null, "avanceUltimaSemana": ["Aceptación del incremento por parte del cliente (PFM 5% y Neurología 4%)"], "actividades": ["Análisis de impacto del aumento de tarifas", "Envío de carta de aceptación (5% PFM y contraoferta 4%)", "Legalización contractual"], "responsables": ["Alex Rozo (Comercial)", "Karen Castellanos (Comercial)", "Leidy Tatiana (Legal)"], "stakeholders": [], "flag": "En riesgo"}, {"id": "noadf-ecopetrol-concurso", "nombre": "Ecopetrol", "razonSocial": "Ecopetrol", "tipoNegocio": "No ADF", "subtipo": "Renegociación", "producto": "Preparación de concurso", "region": "Bogotá D.C.", "departamentosCiudades": "Bogotá D.C.", "duenoNegocio": "Lina Durán", "etapa": "Exploración", "probabilidad": 15, "diasEtapa": 15, "alertaEtapa": "en línea con el objetivo", "ultimoContacto": "30/03/2026", "diasSinContacto": 8, "alertaContacto": "8 días sin contacto", "valorPipeline": 510000000, "estadoActual": "Presentación de interés", "estadoGeneral": "Oportunidad de alto valor en fase de alistamiento para concurso o invitación.", "proximoHito": "Definir plan de trabajo y alistamiento documental.", "fechaHito": "", "responsableHito": "Lina Durán", "poblacionObjetivo": null, "avanceUltimaSemana": ["Envío de correo de interés para participar por parte de CLÍNICOS"], "actividades": ["Definir plan de trabajo", "Alistamiento de documentos", "Desarrollo de modelo financiero y técnico", "Seguimiento a publicación o invitación a concurso / RIM"], "responsables": ["Lina Durán (Comercial)", "Karen Castellanos (Comercial)", "Alex Rozo (Comercial)"], "stakeholders": [], "flag": "En tiempo"}];
+    const STORAGE_KEY = "ficha_tecnica_comercial_v1";
+    const RISK_LEVELS = ["Alto", "Medio", "Bajo"];
+    const STAGE_ORDER = ["Prospección", "Exploración", "Propuesta", "Negociación", "Cierre", "Inicio", "Posventa"];
+    const STAGE_NUMBER = {
+      "Prospección": "1.Prospección",
+      "Exploración": "2.Exploración",
+      "Propuesta": "3.Propuesta",
+      "Negociación": "4.Negociación",
+      "Cierre": "5.Cierre",
+      "Inicio": "6.Inicio",
+      "Posventa": "7.Posventa"
+    };
+    const VALUE_OPTIONS = ["Económico", "Operativo", "Tecnológico", "Técnico"];
+    const COVERAGE_DEFAULTS = {
+      targets: { total: 2987, adf: 1840, noadf: 1147 },
+      objectives: { total: 3.0, adf: 3.0, noadf: 2.5 }
+    };
+
+const BUSINESS_STATUS_OPTIONS = ["Abierto", "Cerrado"];
+const CLOSURE_OPTIONS = ["Ganado", "Perdido", "Cerrado por cambio de estrategia"];
+const LOCAL_ONLY_EDITABLE_FIELDS = new Set(["poblacion", "diasTotales", "fechaIngresoEtapa"]);
+
+
+    const BACKUP_STORAGE_KEY = `${STORAGE_KEY}_backup`;
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function loadLocalBackup() {
+      try {
+        return JSON.parse(localStorage.getItem(BACKUP_STORAGE_KEY)) || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function hasRemoteConfig() {
+      return !!(PIPELINE_CONFIG.supabaseUrl && PIPELINE_CONFIG.supabaseAnonKey && PIPELINE_CONFIG.stateTable);
+    }
+
+    function supabaseHeaders(extra = {}) {
+      return {
+        apikey: PIPELINE_CONFIG.supabaseAnonKey,
+        Authorization: `Bearer ${PIPELINE_CONFIG.supabaseAnonKey}`,
+        ...extra
+      };
+    }
+
+    let remoteStateVersion = null;
+    let remoteSaveTimer = null;
+    let remoteSyncStarted = false;
+    let remoteWriteInFlight = false;
+
+    async function fetchRemoteState() {
+      if (!hasRemoteConfig()) return null;
+      const url = `${PIPELINE_CONFIG.supabaseUrl}/rest/v1/${PIPELINE_CONFIG.stateTable}?id=eq.global&select=state_json,updated_at`;
+      const response = await fetch(url, { headers: supabaseHeaders() });
+      if (!response.ok) throw new Error(`No fue posible leer el estado remoto (${response.status})`);
+      const rows = await response.json();
+      if (!rows.length) return { state: {}, updatedAt: null };
+      return { state: rows[0].state_json || {}, updatedAt: rows[0].updated_at || null };
+    }
+
+    async function writeRemoteState(state) {
+      if (!hasRemoteConfig()) return;
+      remoteWriteInFlight = true;
+      try {
+        const url = `${PIPELINE_CONFIG.supabaseUrl}/rest/v1/${PIPELINE_CONFIG.stateTable}?on_conflict=id`;
+        const payload = { id: 'global', state_json: state, updated_at: new Date().toISOString() };
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: supabaseHeaders({
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation,resolution=merge-duplicates'
+          }),
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error(`No fue posible guardar el estado remoto (${response.status})`);
+        const rows = await response.json();
+        remoteStateVersion = rows[0] && rows[0].updated_at ? rows[0].updated_at : payload.updated_at;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        remoteWriteInFlight = false;
+      }
+    }
+
+    function saveState(state) {
+      const snapshot = JSON.parse(JSON.stringify(state));
+      const serialized = JSON.stringify(snapshot);
+      localStorage.setItem(STORAGE_KEY, serialized);
+      localStorage.setItem(BACKUP_STORAGE_KEY, serialized);
+      if (hasRemoteConfig()) {
+        clearTimeout(remoteSaveTimer);
+        remoteSaveTimer = setTimeout(() => { writeRemoteState(snapshot); }, 300);
+      }
+    }
+
+    async function pullRemoteState(forceRender = true) {
+      if (!hasRemoteConfig() || remoteWriteInFlight) return;
+      try {
+        const remote = await fetchRemoteState();
+        if (!remote) return;
+        const remoteJson = JSON.stringify(remote.state || {});
+        const localJson = JSON.stringify(appState || {});
+        const sameVersion = remote.updatedAt && remote.updatedAt === remoteStateVersion;
+        if (sameVersion && remoteJson === localJson) return;
+        if (remote.state && Object.keys(remote.state).length) {
+          appState = remote.state;
+          remoteStateVersion = remote.updatedAt || remoteStateVersion;
+          localStorage.setItem(STORAGE_KEY, remoteJson);
+          localStorage.setItem(BACKUP_STORAGE_KEY, remoteJson);
+          migrateState();
+          if (forceRender) renderApp();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    function startRemoteSync() {
+      if (!hasRemoteConfig() || remoteSyncStarted) return;
+      remoteSyncStarted = true;
+      setInterval(() => { pullRemoteState(true); }, 5000);
+      window.addEventListener('focus', () => pullRemoteState(true));
+    }
+
+    let appState = loadState();
+    let currentView = (appState.__meta__ && appState.__meta__.view) || "dashboard";
+    let selectedId = BASE_CLIENTS[0] ? BASE_CLIENTS[0].id : null;
+    let businessModalMode = "create";
+    let editingBusinessId = null;
+
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function parseLines(value) {
+      return String(value || "").split(/\n+/).map(item => item.trim()).filter(Boolean);
+    }
+
+    function parseStakeholdersText(value) {
+      return String(value || "").split(/\n+/).map(line => line.trim()).filter(Boolean).map(line => {
+        const [nombre = "", cargo = "", telefono = "", email = "", decisor = "No", valora = ""] = line.split('|').map(part => part.trim());
+        return normalizeStakeholder({
+          nombre,
+          cargo,
+          telefono,
+          email,
+          decisor,
+          valora: valora ? valora.split(',').map(item => item.trim()).filter(Boolean) : []
+        });
+      });
+    }
+
+    function stakeholdersToText(list) {
+      return (list || []).map(item => [item.nombre || '', item.cargo || '', item.telefono || '', item.email || '', item.decisor || 'No', Array.isArray(item.valora) ? item.valora.join(', ') : ''].join(' | ')).join('\n');
+    }
+
+    function ensureMetaClientsData() {
+      ensureMetaState();
+      if (!appState.__meta__.clientsData) appState.__meta__.clientsData = {};
+      if (!appState.__meta__.nextCustomId) appState.__meta__.nextCustomId = 1;
+      return appState.__meta__.clientsData;
+    }
+
+    function getAllClientRecords() {
+      ensureMetaClientsData();
+      const deleted = new Set(appState.__meta__.deletedClients || []);
+      const map = new Map();
+      BASE_CLIENTS.forEach(client => { if (!deleted.has(client.id)) map.set(client.id, { ...client }); });
+      Object.entries(appState.__meta__.clientsData || {}).forEach(([id, override]) => {
+        if (deleted.has(id)) return;
+        const base = map.get(id) || { id };
+        map.set(id, { ...base, ...clone(override) });
+      });
+      return Array.from(map.values());
+    }
+
+    function getRawClientById(clientId) {
+      ensureMetaClientsData();
+      const base = BASE_CLIENTS.find(client => client.id === clientId);
+      const override = (appState.__meta__.clientsData || {})[clientId];
+      if (!base && !override) return null;
+      return { ...(base || { id: clientId }), ...(override ? clone(override) : {}) };
+    }
+
+    function getClosureSummary(client) {
+      if (client.estadoNegocio !== 'Cerrado') return 'Abierto';
+      return client.cierreTipo ? `Cerrado · ${client.cierreTipo}` : 'Cerrado';
+    }
+
+    function activePipelineValue(client) {
+      return client.estadoNegocio === 'Cerrado' ? 0 : Number(client.valorPipeline || 0);
+    }
+
+    function weightedPipelineValue(client) {
+      return client.estadoNegocio === 'Cerrado' ? 0 : Math.round(activePipelineValue(client) * (Number(client.probabilidad || 0) / 100));
+    }
+
+    function defaultBusinessRecord() {
+      const nextId = appState.__meta__.nextCustomId || 1;
+      return {
+        id: `custom-${nextId}`,
+        nombre: '',
+        razonSocial: '',
+        tipoNegocio: 'ADF',
+        subtipo: '',
+        producto: '',
+        region: '',
+        departamentosCiudades: '',
+        duenoNegocio: '',
+        etapa: 'Prospección',
+        probabilidad: 0,
+        diasEtapa: 0,
+        alertaEtapa: '',
+        ultimoContacto: '',
+        diasSinContacto: null,
+        alertaContacto: '',
+        valorPipeline: 0,
+        estadoActual: '',
+        estadoGeneral: '',
+        proximoHito: '',
+        fechaHito: '',
+        responsableHito: '',
+        poblacionObjetivo: null,
+        avanceUltimaSemana: [],
+        actividades: [],
+        responsables: [],
+        stakeholders: [],
+        flag: 'En tiempo',
+        diasTotales: '',
+        fechaIngresoEtapa: '',
+        estadoNegocio: 'Abierto',
+        cierreTipo: '',
+        cierreObservacion: ''
+      };
+    }
+
+    function todayBR() {
+      return formatDateBR(new Date());
+    }
+
+    function defaultScore() {
+      return {
+        dolor: false,
+        decisor: false,
+        champion: false,
+        ruta: false,
+        fecha: false
+      };
+    }
+
+    function normalizeStakeholder(item) {
+      return {
+        nombre: item && item.nombre ? item.nombre : "",
+        cargo: item && item.cargo ? item.cargo : "",
+        area: item && item.area ? item.area : "",
+        telefono: item && item.telefono ? item.telefono : "",
+        email: item && item.email ? item.email : "",
+        decisor: item && (item.decisor === true || item.decisor === "Sí") ? "Sí" : "No",
+        valora: Array.isArray(item && item.valora) ? [...new Set(item.valora.filter(Boolean))] : []
+      };
+    }
+
+    function normalizeTodo(item) {
+      return {
+        texto: item && item.texto ? item.texto : "",
+        responsable: item && item.responsable ? item.responsable : "",
+        fecha: item && item.fecha ? item.fecha : todayBR(),
+        done: !!(item && (item.done === true || item.estado === "Hecho"))
+      };
+    }
+
+    function normalizeAlert(item) {
+      const nivel = item && item.nivel ? item.nivel : "Medio";
+      return {
+        texto: item && item.texto ? item.texto : "",
+        nivel: RISK_LEVELS.includes(nivel) ? nivel : "Medio"
+      };
+    }
+
+    function riskLevelClass(level) {
+      return `risk-${slug(level || "medio")}`;
+    }
+
+    function getClientState(clientId) {
+      if (!appState[clientId]) {
+        appState[clientId] = {
+          notas: "",
+          poblacion: "",
+          stakeholders: [],
+          stakeholdersFull: null,
+          completedActivities: [],
+          activityItems: null,
+          todos: [],
+          alertas: [],
+          priorizado: false,
+          editable: {
+            ultimoContacto: "",
+            diasEtapa: "",
+            diasTotales: "",
+            probabilidad: "",
+            fechaIngresoEtapa: ""
+          },
+          score: defaultScore()
+        };
+      }
+      if (!appState[clientId].editable) {
+        appState[clientId].editable = {
+          ultimoContacto: "",
+          diasEtapa: "",
+          diasTotales: "",
+          probabilidad: "",
+          fechaIngresoEtapa: ""
+        };
+      }
+      if (!appState[clientId].score) {
+        appState[clientId].score = defaultScore();
+      }
+      if (!Array.isArray(appState[clientId].todos)) {
+        appState[clientId].todos = [];
+      }
+      if (!Array.isArray(appState[clientId].alertas)) {
+        appState[clientId].alertas = [];
+      }
+      if (!Array.isArray(appState[clientId].completedActivities)) {
+        appState[clientId].completedActivities = [];
+      }
+      if (typeof appState[clientId].priorizado !== "boolean") {
+        appState[clientId].priorizado = false;
+      }
+      return appState[clientId];
+    }
+
+    function ensureMetaState() {
+      if (!appState.__meta__) appState.__meta__ = {};
+      if (!appState.__meta__.targets) {
+        appState.__meta__.targets = { ...COVERAGE_DEFAULTS.targets };
+      }
+      if (!appState.__meta__.objectives) {
+        appState.__meta__.objectives = { ...COVERAGE_DEFAULTS.objectives };
+      }
+      if (!appState.__meta__.view) {
+        appState.__meta__.view = "dashboard";
+      }
+      if (!appState.__meta__.clientsData) {
+        appState.__meta__.clientsData = {};
+      }
+      if (!appState.__meta__.nextCustomId) {
+        appState.__meta__.nextCustomId = 1;
+      }
+      if (!Array.isArray(appState.__meta__.deletedClients)) {
+        appState.__meta__.deletedClients = [];
+      }
+    }
+
+    function migrateState() {
+      ensureMetaState();
+      getAllClientRecords().forEach(client => {
+        const state = getClientState(client.id);
+
+        if (state.notas && (!state.todos || !state.todos.length) && (!state.aprs || !state.aprs.length)) {
+          state.todos = [{
+            texto: state.notas,
+            responsable: "",
+            fecha: todayBR(),
+            done: false
+          }];
+        }
+
+        if ((!state.todos || !state.todos.length) && Array.isArray(state.aprs) && state.aprs.length) {
+          state.todos = state.aprs.map(item => normalizeTodo(item));
+        }
+
+        if (!state.stakeholdersFull) {
+          const baseStakeholders = (client.stakeholders || []).map(normalizeStakeholder);
+          const customStakeholders = Array.isArray(state.stakeholders) ? state.stakeholders.map(normalizeStakeholder) : [];
+          state.stakeholdersFull = [...baseStakeholders, ...customStakeholders];
+        } else {
+          state.stakeholdersFull = state.stakeholdersFull.map(normalizeStakeholder);
+        }
+
+        state.todos = (state.todos || []).map(normalizeTodo);
+        state.alertas = (state.alertas || []).map(normalizeAlert);
+        if (!Array.isArray(state.activityItems) || !state.activityItems.length) {
+          const responsablesDefault = Array.isArray(client.responsables) ? client.responsables.join(", ") : "";
+          state.activityItems = (client.actividades || []).map(item => ({ texto: item || "", responsable: responsablesDefault, fecha: "", estado: "Por iniciar" }));
+        }
+
+        if ((!state.alertas || !state.alertas.length) && client.flag !== "En tiempo") {
+          state.alertas = [{
+            texto: client.estadoGeneral || client.alertaEtapa || "Sin detalle de alerta",
+            nivel: client.flag === "Crítico" ? "Alto" : "Medio"
+          }];
+        }
+
+        state.score = { ...defaultScore(), ...(state.score || {}) };
+      });
+      saveState(appState);
+    }
+
+    function fmtMoney(value) {
+      return new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0
+      }).format(value || 0);
+    }
+
+    function fmtNum(value) {
+      return new Intl.NumberFormat("es-CO").format(value || 0);
+    }
+
+    function fmtMillions(value) {
+      return new Intl.NumberFormat("es-CO", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format((value || 0) / 1000000);
+    }
+
+    function fmtRatio(value) {
+      return `${Number(value || 0).toFixed(1).replace(".", ",")} x`;
+    }
+
+    function norm(text) {
+      return (text || "")
+        .toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function slug(text) {
+      return norm(text).replace(/[^a-z0-9]+/g, "-");
+    }
+
+    function riskClass(flag) {
+      if (flag === "Crítico") return "danger";
+      if (flag === "En riesgo") return "warn";
+      return "success";
+    }
+
+    function unique(values) {
+      return [...new Set(values.filter(Boolean))];
+    }
+
+    function parseDateBR(value) {
+      if (!value) return null;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const d = new Date(value + "T00:00:00");
+        return Number.isNaN(d.getTime()) ? null : d;
+      }
+      const match = String(value).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (!match) return null;
+      const [, dd, mm, yyyy] = match;
+      const d = new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatDateBR(value) {
+      const date = value instanceof Date ? value : parseDateBR(value);
+      if (!date) return "";
+      const dd = String(date.getDate()).padStart(2, "0");
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+      const yyyy = date.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function toInputDate(value) {
+      const date = parseDateBR(value);
+      if (!date) return "";
+      const dd = String(date.getDate()).padStart(2, "0");
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+      const yyyy = date.getFullYear();
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function fromInputDate(value) {
+      if (!value) return "";
+      return formatDateBR(value);
+    }
+
+    function daysSince(value) {
+      const date = parseDateBR(value);
+      if (!date) return null;
+      const now = new Date();
+      const utcCurrent = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+      const utcDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+      return Math.max(0, Math.round((utcCurrent - utcDate) / 86400000));
+    }
+
+    function extractTolerance(client) {
+      const match = String(client.alertaEtapa || "").match(/(\d+)\s*d[ií]as/i);
+      if (match) return Number(match[1]);
+      const fallback = {
+        "Prospección": 15,
+        "Exploración": 15,
+        "Propuesta": 15,
+        "Negociación": 30,
+        "Cierre": 30,
+        "Inicio": 15,
+        "Posventa": 30
+      };
+      return fallback[client.etapa] || 15;
+    }
+
+    function numberOrEmpty(value) {
+      if (value === "" || value === null || value === undefined) return "";
+      const num = Number(value);
+      return Number.isNaN(num) ? "" : num;
+    }
+
+    function deriveFlag(days, tolerance, fallbackFlag) {
+      const d = Number(days);
+      const t = Number(tolerance);
+      if (!d || !t) return fallbackFlag || "En tiempo";
+      const ratio = d / t;
+      if (ratio <= 1) return "En tiempo";
+      if (ratio <= 1.5) return "En riesgo";
+      return "Crítico";
+    }
+
+    function buildStageAlert(days, tolerance) {
+      if (!tolerance) return "Sin tolerancia definida";
+      if (days <= tolerance) return `dentro del objetivo de ${tolerance} días`;
+      if (days <= tolerance * 1.5) return `supera objetivo de ${tolerance} días`;
+      return `críticamente por encima del objetivo de ${tolerance} días`;
+    }
+
+    function buildContactAlert(contacto, dias) {
+      if (!contacto || dias === null) return "Sin registro";
+      if (dias <= 7) return `${dias} días sin contacto`;
+      if (dias <= 14) return `${dias} días sin contacto`;
+      return `${dias} días sin contacto – alto riesgo`;
+    }
+
+    function getStakeholders(client) {
+      return getClientState(client.id).stakeholdersFull || [];
+    }
+
+    function currentPopulation(client) {
+      const saved = getClientState(client.id).poblacion;
+      return saved !== "" && saved !== null && saved !== undefined ? Number(saved) : client.poblacionObjetivo;
+    }
+
+    function currentTodos(client) {
+      return getClientState(client.id).todos || [];
+    }
+
+    function currentAlerts(client) {
+      return getClientState(client.id).alertas || [];
+    }
+
+    function deriveClient(client) {
+      const state = getClientState(client.id);
+      const editable = state.editable || {};
+      const diasTotales = numberOrEmpty(editable.diasTotales);
+      const probabilidad = numberOrEmpty(editable.probabilidad);
+      const fechaIngresoEtapa = editable.fechaIngresoEtapa || client.fechaIngresoEtapa || "";
+      const tolerance = extractTolerance(client);
+      const merged = {
+        ...client,
+        stakeholders: getStakeholders(client),
+        poblacionObjetivo: currentPopulation(client),
+        todos: currentTodos(client),
+        alertas: currentAlerts(client),
+        priorizado: !!state.priorizado,
+        diasTotales: diasTotales === "" ? (client.diasTotales || "") : diasTotales,
+        probabilidad: probabilidad === "" ? Number(client.probabilidad || 0) : probabilidad,
+        ultimoContacto: editable.ultimoContacto ? editable.ultimoContacto : client.ultimoContacto,
+        fechaIngresoEtapa,
+        estadoNegocio: client.estadoNegocio || "Abierto",
+        cierreTipo: client.cierreTipo || "",
+        cierreObservacion: client.cierreObservacion || ""
+      };
+      const autoDiasEtapa = fechaIngresoEtapa ? daysSince(fechaIngresoEtapa) : null;
+      merged.diasEtapa = autoDiasEtapa !== null ? autoDiasEtapa : Number(client.diasEtapa || 0);
+      merged.toleranciaEtapa = tolerance;
+      merged.flag = deriveFlag(merged.diasEtapa, tolerance, client.flag);
+      merged.alertaEtapa = buildStageAlert(merged.diasEtapa, tolerance);
+      merged.diasSinContacto = daysSince(merged.ultimoContacto);
+      merged.alertaContacto = buildContactAlert(merged.ultimoContacto, merged.diasSinContacto);
+      merged.valorPonderado = weightedPipelineValue(merged);
+      return merged;
+    }
+
+    function stageClass(etapa) {
+      return `stage-${slug(etapa)}`;
+    }
+
+    function stageHealth(client) {
+      if (!client.fechaHito) return "danger";
+      if (client.flag === "Crítico") return "danger";
+      if (client.flag === "En riesgo") return "warn";
+      return "success";
+    }
+
+    function contactHealth(client) {
+      if (client.diasSinContacto === null) return "danger";
+      if (client.diasSinContacto <= 7) return "success";
+      if (client.diasSinContacto <= 14) return "warn";
+      return "danger";
+    }
+
+    function statusSymbol(kind) {
+      if (kind === "success") return "✓";
+      if (kind === "warn") return "!";
+      return "×";
+    }
+
+    function criteriaLabels() {
+      return {
+        dolor: "Dolor validado",
+        decisor: "Decisor identificado",
+        champion: "Champion activo",
+        ruta: "Ruta de compra clara",
+        fecha: "Siguiente paso fechado"
+      };
+    }
+
+    function scorePercent(score) {
+      const vals = Object.values(score || {});
+      const done = vals.filter(Boolean).length;
+      return {
+        done,
+        total: 5,
+        percent: Math.round((done / 5) * 100)
+      };
+    }
+
+    function missingFields(client) {
+      const list = [];
+      if (!currentPopulation(client)) list.push("Población objetivo");
+      if (!getStakeholders(client).length) list.push("Stakeholders");
+      if (!client.fechaHito) list.push("Fecha del hito");
+      if (!client.diasTotales) list.push("Días totales del negocio");
+      return list;
+    }
+
+    function clientSearchBlob(client) {
+      return [
+        client.nombre,
+        client.razonSocial,
+        client.tipoNegocio,
+        client.subtipo,
+        client.producto,
+        client.region,
+        client.etapa,
+        client.estadoActual,
+        client.estadoGeneral,
+        client.proximoHito,
+        client.responsableHito,
+        ...(client.responsables || []),
+        ...(client.actividades || []),
+        ...((client.avanceUltimaSemana || [])) ,
+        ...getStakeholders(client).map(s => `${s.nombre} ${s.cargo} ${s.area} ${s.valora.join(" ")}`),
+        ...currentTodos(client).map(item => `${item.texto} ${item.responsable}`),
+        ...currentAlerts(client).map(item => `${item.texto} ${item.nivel}`)
+      ].join(" | ");
+    }
+
+    function riskWeight(flag) {
+      return flag === "Crítico" ? 3 : flag === "En riesgo" ? 2 : 1;
+    }
+
+    function stageWeight(etapa) {
+      const idx = STAGE_ORDER.indexOf(etapa);
+      return idx === -1 ? 0 : idx;
+    }
+
+    function getFilters() {
+      return {
+        search: document.getElementById("searchInput").value.trim(),
+        tipo: document.getElementById("tipoFilter").value,
+        subtipo: document.getElementById("subtipoFilter").value,
+        etapa: document.getElementById("etapaFilter").value,
+        riesgo: document.getElementById("riesgoFilter").value,
+        sortBy: document.getElementById("sortBy").value
+      };
+    }
+
+    function filteredClients() {
+      const filters = getFilters();
+      const arr = getAllClientRecords()
+        .map(deriveClient)
+        .filter(client => {
+          if (filters.tipo && client.tipoNegocio !== filters.tipo) return false;
+          if (filters.subtipo && client.subtipo !== filters.subtipo) return false;
+          if (filters.etapa && client.etapa !== filters.etapa) return false;
+          if (filters.riesgo && client.flag !== filters.riesgo) return false;
+          if (filters.search) {
+            const blob = norm(clientSearchBlob(client));
+            if (!blob.includes(norm(filters.search))) return false;
+          }
+          return true;
+        });
+
+      const sorters = {
+        valor_desc: (a, b) => b.valorPipeline - a.valorPipeline,
+        valor_asc: (a, b) => a.valorPipeline - b.valorPipeline,
+        riesgo: (a, b) => (riskWeight(b.flag) - riskWeight(a.flag)) || (b.valorPipeline - a.valorPipeline),
+        probabilidad: (a, b) => b.probabilidad - a.probabilidad || b.valorPipeline - a.valorPipeline,
+        dias: (a, b) => (b.diasEtapa || 0) - (a.diasEtapa || 0),
+        nombre: (a, b) => a.nombre.localeCompare(b.nombre, "es"),
+        etapa: (a, b) => stageWeight(b.etapa) - stageWeight(a.etapa) || b.valorPipeline - a.valorPipeline
+      };
+
+      arr.sort(sorters[filters.sortBy] || sorters.riesgo);
+      return arr;
+    }
+
+    function fillSelect(id, options, label) {
+      const el = document.getElementById(id);
+      const current = el.value;
+      el.innerHTML = `<option value="">${label}</option>` + options.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+      if (options.includes(current)) el.value = current;
+    }
+
+    function initFilters() {
+      fillSelect("tipoFilter", unique(getAllClientRecords().map(c => c.tipoNegocio)), "Tipo de negocio");
+      fillSelect("subtipoFilter", unique(getAllClientRecords().map(c => c.subtipo)), "Subtipo");
+      fillSelect("etapaFilter", unique(getAllClientRecords().map(c => c.etapa)).sort((a, b) => STAGE_ORDER.indexOf(a) - STAGE_ORDER.indexOf(b)), "Etapa");
+      fillSelect("riesgoFilter", ["Crítico", "En riesgo", "En tiempo"], "Flag / riesgo");
+      const sort = document.getElementById("sortBy");
+      sort.innerHTML = `
+        <option value="riesgo">Ordenar: riesgo</option>
+        <option value="valor_desc">Ordenar: pipeline alto</option>
+        <option value="valor_asc">Ordenar: pipeline bajo</option>
+        <option value="probabilidad">Ordenar: probabilidad</option>
+        <option value="dias">Ordenar: días en etapa</option>
+        <option value="etapa">Ordenar: etapa</option>
+        <option value="nombre">Ordenar: nombre</option>
+      `;
+      sort.value = "riesgo";
+    }
+
+    function getVisibleClients() {
+      return filteredClients();
+    }
+
+    function summarize(clients) {
+      const total = clients.reduce((acc, client) => acc + activePipelineValue(client), 0);
+      const ponderado = clients.reduce((acc, client) => acc + weightedPipelineValue(client), 0);
+      const adf = clients.filter(client => client.tipoNegocio === "ADF");
+      const noAdf = clients.filter(client => client.tipoNegocio === "No ADF");
+      const riesgo = clients.filter(client => client.flag !== "En tiempo").length;
+      const priorizados = clients.filter(client => client.priorizado).length;
+      const sinContacto = clients.filter(client => client.diasSinContacto === null).length;
+      const todoCount = clients.reduce((acc, client) => acc + currentTodos(client).length, 0);
+      const topSubtipoMap = {};
+      const topEtapaMap = {};
+
+      clients.forEach(client => {
+        topSubtipoMap[client.subtipo] = (topSubtipoMap[client.subtipo] || 0) + activePipelineValue(client);
+        topEtapaMap[client.etapa] = (topEtapaMap[client.etapa] || 0) + 1;
+      });
+
+      const topSubtipo = Object.entries(topSubtipoMap).sort((a, b) => b[1] - a[1])[0];
+      const topEtapa = Object.entries(topEtapaMap).sort((a, b) => b[1] - a[1])[0];
+
+      return {
+        total,
+        ponderado,
+        adfTotal: adf.reduce((acc, client) => acc + activePipelineValue(client), 0),
+        adfPonderado: adf.reduce((acc, client) => acc + weightedPipelineValue(client), 0),
+        noAdfTotal: noAdf.reduce((acc, client) => acc + activePipelineValue(client), 0),
+        noAdfPonderado: noAdf.reduce((acc, client) => acc + weightedPipelineValue(client), 0),
+        count: clients.length,
+        riesgo,
+        priorizados,
+        sinContacto,
+        todoCount,
+        topSubtipo: topSubtipo ? `${topSubtipo[0]} · ${fmtMoney(topSubtipo[1]).replace("COP", "").trim()}` : "-",
+        topEtapa: topEtapa ? `${topEtapa[0]} · ${topEtapa[1]}` : "-"
+      };
+    }
+
+    function renderHeroStats() {
+      const all = getAllClientRecords().map(deriveClient);
+      const summary = summarize(all);
+      document.getElementById("heroClientes").textContent = fmtNum(summary.count);
+      document.getElementById("heroPipeline").textContent = fmtMoney(summary.total);
+      document.getElementById("heroPonderado").textContent = fmtMoney(summary.ponderado);
+      document.getElementById("heroRiesgo").textContent = fmtNum(summary.riesgo);
+      document.getElementById("heroPriorizados").textContent = fmtNum(summary.priorizados);
+    }
+
+    function coverageRows(clients) {
+      const summary = summarize(clients);
+      const targets = appState.__meta__.targets;
+      const objectives = appState.__meta__.objectives;
+
+      const rows = [
+        { key: "total", label: "Pipeline Total", actual: summary.total },
+        { key: "ponderado", label: "Valor ponderado", actual: summary.ponderado, targetKey: "total" },
+        { key: "adf", label: "Pipeline ADF", actual: summary.adfTotal },
+        { key: "noadf", label: "Pipeline No ADF", actual: summary.noAdfTotal }
+      ];
+
+      return rows.map(row => {
+        const meta = Number(targets[row.key] || 0);
+        const actualMillions = row.actual / 1000000;
+        const cobertura = meta ? actualMillions / meta : 0;
+        const objetivo = objectives[row.key];
+        let status = "danger";
+        if (cobertura >= objetivo) status = "success";
+        else if (cobertura >= objetivo * 0.75) status = "warn";
+
+        return {
+          ...row,
+          meta,
+          cobertura,
+          objetivo,
+          status
+        };
+      });
+    }
+
+    function renderCoverage(clients) {
+      const tbody = document.getElementById("coverageTableBody");
+      const rows = coverageRows(clients);
+      tbody.innerHTML = rows.map(row => `
+        <tr>
+          <td class="metric-name">${row.label}</td>
+          <td class="metric-num">${fmtMillions(row.actual)}</td>
+          <td class="metric-num">${fmtNum(row.meta)}</td>
+          <td class="metric-num">${fmtRatio(row.cobertura)}</td>
+          <td class="metric-obj">≥ ${Number(row.objetivo).toFixed(1).replace(".", ",")} x</td>
+          <td><span class="semaphore ${row.status}" aria-hidden="true"></span></td>
+        </tr>
+      `).join("");
+
+      document.querySelectorAll("[data-target-key]").forEach(input => {
+        const key = input.dataset.targetKey;
+        input.value = appState.__meta__.targets[key] ?? "";
+      });
+    }
+
+    function renderSummaryBands(clients) {
+      const summary = summarize(clients);
+      const markup = `
+        <div class="summary-card">
+          <div class="label">Pipeline total</div>
+          <div class="value">${fmtMoney(summary.total)}</div>
+          <div class="hint">${fmtNum(summary.count)} negocios visibles</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Valor ponderado</div>
+          <div class="value">${fmtMoney(summary.ponderado)}</div>
+          <div class="hint">Valor × porcentaje de probabilidad</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">ADF / No ADF</div>
+          <div class="value">${fmtMoney(summary.adfTotal)}</div>
+          <div class="hint">ADF · ${fmtMoney(summary.noAdfTotal)} No ADF</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Riesgo / priorización</div>
+          <div class="value">${fmtNum(summary.riesgo)}</div>
+          <div class="hint">${fmtNum(summary.priorizados)} priorizados · TO DO ${fmtNum(summary.todoCount)}</div>
+        </div>
+      `;
+      document.getElementById("summaryBand").innerHTML = markup;
+      document.getElementById("fichaSummaryBand").innerHTML = markup;
+      document.getElementById("listMeta").textContent = `Mostrando ${fmtNum(summary.count)} oportunidades`;
+    }
+
+    function buildValueBar(value, maxValue) {
+      const width = maxValue ? Math.max(10, Math.round((value / maxValue) * 100)) : 0;
+      return `
+        <div class="value-bar">
+          <span style="width:${width}%"></span>
+          <strong>${fmtMillions(value)}</strong>
+        </div>
+      `;
+    }
+
+    function priorityCell(client) {
+      return `<input type="checkbox" class="priority-box" data-priority-client="${client.id}" ${client.priorizado ? "checked" : ""} />`;
+    }
+
+    function renderTopTables(clients) {
+      const adf = clients.filter(client => client.tipoNegocio === "ADF").sort((a, b) => b.valorPipeline - a.valorPipeline).slice(0, 5);
+      const noAdf = clients.filter(client => client.tipoNegocio === "No ADF").sort((a, b) => b.valorPipeline - a.valorPipeline).slice(0, 6);
+
+      const buildRows = (rows) => {
+        if (!rows.length) {
+          return `<tr><td colspan="6" class="muted-text">No hay negocios visibles con los filtros actuales.</td></tr>`;
+        }
+        return rows.map((client) => {
+          const combinedState = client.flag;
+          return `
+          <tr class="clickable" data-open-client="${client.id}">
+            <td class="table-client" title="${client.nombre}${client.producto && client.producto !== "ADF" ? ` - ${client.producto}` : ""}">${client.nombre}${client.producto && client.producto !== "ADF" ? ` - ${client.producto}` : ""}</td>
+            <td title="${client.etapa}"><span class="stage-pill ${stageClass(client.etapa)}">${client.etapa}</span></td>
+            <td title="${client.probabilidad}%">${client.probabilidad}%</td>
+            <td class="table-value" title="${fmtMoney(client.valorPipeline)}">${fmtMoney(client.valorPipeline)}</td>
+            <td title="${combinedState}"><span class="flag-badge ${riskClass(client.flag)}">${combinedState}</span></td>
+            <td>${priorityCell(client)}</td>
+          </tr>
+        `}).join("");
+      };
+
+      document.getElementById("topAdfBody").innerHTML = buildRows(adf);
+      document.getElementById("topNoAdfBody").innerHTML = buildRows(noAdf);
+    }
+
+    function renderAllDeals(clients) {
+      const tbody = document.getElementById("allDealsBody");
+      if (!clients.length) {
+        tbody.innerHTML = `<tr><td colspan="11" class="muted-text">No hay negocios visibles con los filtros actuales.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = clients.map(client => `
+        <tr class="clickable" data-open-client="${client.id}">
+          <td>${client.tipoNegocio}</td>
+          <td>${client.subtipo}</td>
+          <td>${client.nombre}</td>
+          <td><span class="stage-pill ${stageClass(client.etapa)}">${client.etapa}</span></td>
+          <td>${client.probabilidad}%</td>
+          <td>${fmtMoney(client.valorPipeline)}</td>
+          <td>${client.diasEtapa}</td>
+          <td>${client.ultimoContacto || "Sin registro"}</td>
+          <td>${client.duenoNegocio}</td>
+          <td>${fmtNum(currentTodos(client).length)}</td>
+          <td><span class="pill-link">Abrir ficha →</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderClientList(clients) {
+      if (!clients.find(client => client.id === selectedId) && clients.length) {
+        selectedId = clients[0].id;
+      }
+
+      const list = document.getElementById("clientList");
+      const noResults = document.getElementById("noResults");
+
+      if (!clients.length) {
+        list.innerHTML = "";
+        noResults.style.display = "block";
+        document.getElementById("detailPanel").innerHTML = `<div class="empty">No hay una oportunidad seleccionable con los filtros actuales.</div>`;
+        return;
+      }
+      noResults.style.display = "none";
+
+      list.innerHTML = clients.map(client => {
+        const population = currentPopulation(client);
+        const stakeholdersCount = getStakeholders(client).length;
+        const todos = currentTodos(client).length;
+        return `
+          <article class="client-card ${client.id === selectedId ? "active" : ""}" data-open-client="${client.id}">
+            <div class="card-top">
+              <div>
+                <div class="card-name">${client.nombre}</div>
+                <div class="card-sub">${client.tipoNegocio} · ${client.subtipo} · ${client.producto}</div>
+              </div>
+              <div class="pipeline">
+                ${fmtMoney(client.valorPipeline)}
+                <small>${client.probabilidad}% probabilidad</small>
+              </div>
+            </div>
+
+            <div class="chips">
+              <span class="chip primary">${client.etapa}</span>
+              <span class="chip ${riskClass(client.flag)}">${client.flag}</span>
+              <span class="chip subtle">${client.region}</span>
+              ${client.priorizado ? `<span class="chip warn">Priorizado</span>` : ""}
+              <span class="chip ${client.estadoNegocio === "Cerrado" ? "danger status-chip-closed" : "success status-chip-open"}">${getClosureSummary(client)}</span>
+            </div>
+
+            <div class="card-body">
+              <div class="metric">
+                <div class="m-label">Estado actual</div>
+                <div class="m-value">${client.estadoActual}</div>
+              </div>
+              <div class="metric">
+                <div class="m-label">Dueño del negocio</div>
+                <div class="m-value">${client.duenoNegocio}</div>
+              </div>
+              <div class="metric">
+                <div class="m-label">Días en etapa / total</div>
+                <div class="m-value">${client.diasEtapa} en etapa · ${client.diasTotales || "s/i"} total</div>
+              </div>
+              <div class="metric">
+                <div class="m-label">Población / stakeholders / TO DO</div>
+                <div class="m-value">${population ? fmtNum(population) + " pacientes" : "No informado"} · ${stakeholdersCount} stakeholders · ${todos} TO DO</div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      renderDetail();
+    }
+
+    function renderDetail() {
+      const client = getVisibleClients().find(item => item.id === selectedId) || getAllClientRecords().map(deriveClient).find(item => item.id === selectedId);
+      const container = document.getElementById("detailPanel");
+      if (!client) {
+        container.innerHTML = `<div class="empty">Selecciona un cliente para ver el detalle.</div>`;
+        return;
+      }
+
+      const local = getClientState(client.id);
+      const stakeholders = getStakeholders(client);
+      const score = scorePercent(local.score);
+      const population = currentPopulation(client);
+      const missing = missingFields(client);
+      const todos = currentTodos(client);
+      const alertas = currentAlerts(client);
+
+      container.innerHTML = `
+        <div class="detail-wrap">
+          <div class="detail-hero">
+            <div class="detail-top">
+              <div class="detail-copy">
+                <div>
+                  <h2 class="detail-name">${client.nombre}</h2>
+                  <p class="detail-desc">${client.estadoGeneral}</p>
+                </div>
+                <div class="chips" style="margin-top:0;">
+                  <span class="chip primary">${client.tipoNegocio} · ${client.subtipo}</span>
+                  <span class="chip">${client.producto}</span>
+                  <span class="chip">${client.etapa}</span>
+                  <span class="chip ${riskClass(client.flag)}">${client.flag}</span>
+                  <span class="chip subtle">${client.region}</span>
+                </div>
+              </div>
+              <div class="detail-actions hide-print">
+                <button class="button" id="copySummaryBtn">Copiar resumen comité</button>
+                <button class="button" id="editBusinessBtn" data-edit-business="${client.id}">Editar negocio</button>
+                <button class="button" id="deleteBusinessBtn" data-delete-business="${client.id}">Eliminar negocio</button>
+                <button class="button primary alt" id="detailPrintBtn">Imprimir ficha</button>
+              </div>
+            </div>
+            <div class="detail-kpis">
+              <div class="detail-kpi">
+                <div class="label">Valor total del negocio</div>
+                <div class="value">${fmtMoney(client.valorPipeline)}</div>
+                <div class="sub">${client.probabilidad}% de probabilidad</div>
+              </div>
+              <div class="detail-kpi">
+                <div class="label">Valor ponderado</div>
+                <div class="value">${fmtMoney(client.valorPonderado)}</div>
+                <div class="sub">Valor × porcentaje de probabilidad</div>
+              </div>
+              <div class="detail-kpi">
+                <div class="label">Días en etapa</div>
+                <div class="value">${fmtNum(client.diasEtapa)}</div>
+                <div class="sub">${client.alertaEtapa}</div>
+              </div>
+              <div class="detail-kpi">
+                <div class="label">Último contacto</div>
+                <div class="value">${client.ultimoContacto || "Sin registro"}</div>
+                <div class="sub">${client.alertaContacto}</div>
+              </div>
+              <div class="detail-kpi">
+                <div class="label">Próximo hito</div>
+                <div class="value">${client.fechaHito || "Pendiente"}</div>
+                <div class="sub">${client.responsableHito || "Sin responsable"}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-grid">
+            <section class="section-card">
+              <h3>Resumen ejecutivo</h3>
+              <div class="info-grid">
+                <div class="info-item"><div class="label">Cliente</div><div class="value">${client.nombre}</div></div>
+                <div class="info-item"><div class="label">Razón social</div><div class="value">${client.razonSocial}</div></div>
+                <div class="info-item"><div class="label">Valor pipeline</div><div class="value">${fmtMoney(client.valorPipeline)}</div><div class="sub">${client.probabilidad}% de probabilidad</div></div>
+                <div class="info-item"><div class="label">Dueño del negocio</div><div class="value">${client.duenoNegocio}</div></div>
+                <div class="info-item"><div class="label">Región / ciudades</div><div class="value">${client.departamentosCiudades}</div></div>
+                <div class="info-item"><div class="label">Producto en juego</div><div class="value">${client.producto}</div></div>
+                <div class="info-item"><div class="label">Etapa actual</div><div class="value">${client.etapa}</div><div class="sub">${client.diasEtapa} días en etapa · ${client.alertaEtapa}</div></div>
+                <div class="info-item"><div class="label">Último contacto</div><div class="value">${client.ultimoContacto || "Sin registro"}</div><div class="sub">${client.alertaContacto}</div></div>
+                <div class="info-item"><div class="label">Estado actual</div><div class="value">${client.estadoActual}</div></div>
+                <div class="info-item"><div class="label">Próximo hito</div><div class="value">${client.proximoHito}</div><div class="sub">Responsable: ${client.responsableHito}${client.fechaHito ? " · Fecha: " + client.fechaHito : ""}</div></div>
+                <div class="info-item"><div class="label">Población objetivo</div><div class="value">${population ? fmtNum(population) + " pacientes" : "No informado"}</div><div class="sub">Editable en esta ficha</div></div>
+                <div class="info-item"><div class="label">Flag</div><div class="value"><span class="badge ${riskClass(client.flag)}">${client.flag}</span></div></div>
+                <div class="info-item"><div class="label">Estado del negocio</div><div class="value">${getClosureSummary(client)}</div><div class="sub">${client.cierreObservacion || "Sin observación"}</div></div>
+              </div>
+
+              <div class="section-hint" style="margin-top:16px;">Edición rápida en la misma pantalla</div>
+              <div class="edit-grid">
+                <div class="edit-card">
+                  <div class="edit-label">Fecha de último contacto</div>
+                  <input class="inline-input" type="date" data-client-id="${client.id}" data-edit-field="ultimoContacto" value="${toInputDate(client.ultimoContacto)}" />
+                </div>
+                <div class="edit-card">
+                  <div class="edit-label">Fecha de ingreso a la etapa</div>
+                  <input class="inline-input" type="date" data-client-id="${client.id}" data-edit-field="fechaIngresoEtapa" value="${toInputDate(client.fechaIngresoEtapa)}" />
+                  <div class="form-help">A partir de esta fecha se calculan automáticamente los días en etapa y la alerta.</div>
+                </div>
+                <div class="edit-card">
+                  <div class="edit-label">Días totales del negocio</div>
+                  <input class="inline-input" type="number" min="0" data-client-id="${client.id}" data-edit-field="diasTotales" value="${client.diasTotales}" placeholder="Completar" />
+                </div>
+                <div class="edit-card">
+                  <div class="edit-label">Probabilidad del negocio (%)</div>
+                  <input class="inline-input" type="number" min="0" max="100" data-client-id="${client.id}" data-edit-field="probabilidad" value="${client.probabilidad}" />
+                </div>
+                <div class="edit-card">
+                  <div class="edit-label">Población objetivo</div>
+                  <input class="inline-input" type="number" min="0" data-client-id="${client.id}" data-edit-field="poblacion" value="${population || ""}" placeholder="Ingresar población" />
+                </div>
+                <div class="edit-card">
+                  <div class="edit-label">Priorizado en conversación</div>
+                  <label class="pill-option active" style="width:max-content;">
+                    <input type="checkbox" data-priority-client="${client.id}" ${client.priorizado ? "checked" : ""} />
+                    Marcar para comité gerencial
+                  </label>
+                </div>
+                              <div class="edit-card">
+                  <div class="edit-label">Estado del negocio</div>
+                  <select class="inline-select" data-client-id="${client.id}" data-edit-field="estadoNegocio">
+                    ${BUSINESS_STATUS_OPTIONS.map(option => `<option value="${option}" ${client.estadoNegocio === option ? "selected" : ""}>${option}</option>`).join("")}
+                  </select>
+                </div>
+              </div>
+              ${client.estadoNegocio === "Cerrado" ? `
+                <div class="closure-box" style="margin-top:14px;">
+                  <div class="edit-grid">
+                    <div class="edit-card">
+                      <div class="edit-label">Tipo de cierre</div>
+                      <select class="inline-select" data-client-id="${client.id}" data-edit-field="cierreTipo">
+                        <option value="">Seleccionar</option>
+                        ${CLOSURE_OPTIONS.map(option => `<option value="${option}" ${client.cierreTipo === option ? "selected" : ""}>${option}</option>`).join("")}
+                      </select>
+                    </div>
+                    <div class="edit-card" style="grid-column:1 / -1;">
+                      <div class="edit-label">Observación de cierre</div>
+                      <textarea class="inline-textarea" data-client-id="${client.id}" data-edit-field="cierreObservacion" placeholder="Describe la razón del cierre">${client.cierreObservacion || ""}</textarea>
+                    </div>
+                  </div>
+                </div>` : ""}
+            </section>
+
+            <section class="section-card">
+              <h3>Calificación del deal</h3>
+              <div class="section-hint">Marca la salud comercial del negocio durante el comité. Se calcula automáticamente y se sincroniza con la base compartida.</div>
+              <div class="score-grid">
+                ${Object.entries(criteriaLabels()).map(([key, label]) => `
+                  <div class="score-item">
+                    <label>
+                      <input type="checkbox" data-score="${key}" data-client-id="${client.id}" ${local.score[key] ? "checked" : ""} />
+                      <span>${label}</span>
+                    </label>
+                    <div class="section-hint">${local.score[key] ? "Cumplido" : "Pendiente"}</div>
+                  </div>
+                `).join("")}
+              </div>
+              <div class="score-total">
+                <div style="min-width:180px;">
+                  <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Score actual</div>
+                  <div style="font-size:30px;font-weight:900;margin-top:4px;">${score.done}/5</div>
+                </div>
+                <div style="flex:1;">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);">
+                    <span>Madurez comercial</span><span>${score.percent}%</span>
+                  </div>
+                  <div class="progress"><span style="width:${score.percent}%;"></span></div>
+                </div>
+              </div>
+
+              <div class="section-hint" style="margin-top:16px;">Campos faltantes detectados en el insumo base:</div>
+              <div class="missing-list">
+                ${missing.length ? missing.map(item => `<span class="tag-muted">${item}</span>`).join("") : `<span class="chip success">Ficha base completa</span>`}
+              </div>
+            </section>
+          </div>
+
+          <div class="detail-grid">
+            <section class="section-card">
+              <h3>Actividades y responsables</h3>
+              <div class="section-hint">Actualiza fecha y estado. Las tareas hechas pasan al histórico desplegable.</div>
+              <div class="activity-list">
+                ${currentActivityItems(client).filter(item => item.estado !== "Hecha").map((item, index) => `
+                  <div class="activity activity-status-${slug(item.estado || "Por iniciar")}">
+                    <div>
+                      <div class="edit-label">Actividad</div>
+                      <textarea class="inline-textarea activity-textarea" data-activity-field="texto" data-client-id="${client.id}" data-activity-index="${index}">${item.texto || ""}</textarea>
+                    </div>
+                    <div class="activity-row-grid">
+                      <div>
+                        <div class="edit-label">Responsable</div>
+                        <input class="inline-input" data-activity-field="responsable" data-client-id="${client.id}" data-activity-index="${index}" value="${item.responsable || ""}" />
+                      </div>
+                      <div>
+                        <div class="edit-label">Fecha</div>
+                        <input type="date" class="inline-input" data-activity-field="fecha" data-client-id="${client.id}" data-activity-index="${index}" value="${toInputDate(item.fecha || "")}" />
+                      </div>
+                      <div>
+                        <div class="edit-label">Estado</div>
+                        <select class="inline-select" data-activity-field="estado" data-client-id="${client.id}" data-activity-index="${index}">
+                          ${["Por iniciar","En proceso","Retrasada","Hecha"].map(status => `<option value="${status}" ${item.estado===status ? "selected" : ""}>${status}</option>`).join("")}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="activity-actions">
+                      <span class="activity-badge activity-badge-${slug(item.estado || "Por iniciar")}">${item.estado || "Por iniciar"}</span>
+                      <button type="button" class="soft-button" data-remove-activity-item="${index}" data-client-id="${client.id}">Eliminar</button>
+                    </div>
+                  </div>
+                `).join("") || `<div class="empty">No hay actividades activas. Agrega una nueva para comenzar.</div>`}
+              </div>
+              <div class="row-actions hide-print" style="margin-top:12px;">
+                <button type="button" class="small-button" data-action="add-activity-item" data-client-id="${client.id}">+ Agregar actividad</button>
+              </div>
+              <details class="activity-history" ${currentActivityItems(client).some(item => item.estado === "Hecha") ? "" : "style='display:none;'"}>
+                <summary>Histórico de actividades hechas (${currentActivityItems(client).filter(item => item.estado === "Hecha").length})</summary>
+                <div class="activity-history-list">
+                  ${currentActivityItems(client).filter(item => item.estado === "Hecha").map((item, historyIndex) => `
+                    <div class="activity activity-status-hecha">
+                      <div class="activity-title">${item.texto || "Actividad sin descripción"}</div>
+                      <div class="activity-meta">Responsable: ${item.responsable || "Sin asignar"} · Fecha: ${item.fecha || "Sin fecha"}</div>
+                    </div>
+                  `).join("")}
+                </div>
+              </details>
+
+              <div style="margin-top:14px;">
+                <div class="edit-label">Avance de la última semana</div>
+                <textarea class="inline-textarea" data-client-array-field="avanceUltimaSemana" data-client-id="${client.id}" placeholder="Una línea por avance">${(client.avanceUltimaSemana || []).join("\n")}</textarea>
+                <div class="muted-text" style="margin-top:6px;">Escribe un avance por línea. Este campo es editable.</div>
+              </div>
+            </section>
+
+            <section class="section-card">
+              <h3>Stakeholders</h3>
+              <div class="section-hint">Ficha ampliada con decisor, cargo, área, teléfono, correo y lo que más valora cada contacto. Puedes editar directamente cada tarjeta.</div>
+              <div class="stakeholder-grid">
+                ${stakeholders.length ? stakeholders.map((stakeholder, index) => `
+                  <div class="stakeholder-card">
+                    <div class="stakeholder-section">
+                      <div class="stakeholder-head">
+                        <input class="inline-input" placeholder="Nombre" data-client-id="${client.id}" data-stakeholder-index="${index}" data-stakeholder-field="nombre" value="${stakeholder.nombre}" />
+                        <button class="soft-button hide-print" data-remove-stakeholder="${index}" data-client-id="${client.id}">Quitar</button>
+                      </div>
+                    </div>
+                    <div class="stakeholder-section stakeholder-row">
+                      <div class="stakeholder-inline">
+                        <div class="stake-label">Cargo</div>
+                        <input class="inline-input" placeholder="Cargo" data-client-id="${client.id}" data-stakeholder-index="${index}" data-stakeholder-field="cargo" value="${stakeholder.cargo}" />
+                      </div>
+                      <div class="stakeholder-inline">
+                        <div class="stake-label">Decisor</div>
+                        <select class="inline-select" data-client-id="${client.id}" data-stakeholder-index="${index}" data-stakeholder-field="decisor">
+                          <option value="Sí" ${stakeholder.decisor === "Sí" ? "selected" : ""}>Sí</option>
+                          <option value="No" ${stakeholder.decisor === "No" ? "selected" : ""}>No</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="stakeholder-section stakeholder-row">
+                      <div class="stakeholder-inline">
+                        <div class="stake-label">Teléfono</div>
+                        <input class="inline-input" placeholder="Teléfono" data-client-id="${client.id}" data-stakeholder-index="${index}" data-stakeholder-field="telefono" value="${stakeholder.telefono || ""}" />
+                      </div>
+                      <div class="stakeholder-inline">
+                        <div class="stake-label">Correo</div>
+                        <input class="inline-input" placeholder="Correo electrónico" data-client-id="${client.id}" data-stakeholder-index="${index}" data-stakeholder-field="email" value="${stakeholder.email || ""}" />
+                      </div>
+                    </div>
+                    <div class="stakeholder-section">
+                      <div class="stakeholder-inline">
+                        <div class="stake-label">Área</div>
+                        <input class="inline-input" placeholder="Área" data-client-id="${client.id}" data-stakeholder-index="${index}" data-stakeholder-field="area" value="${stakeholder.area}" />
+                      </div>
+                    </div>
+                    <div class="stakeholder-section">
+                      <div class="stake-label">Qué valora</div>
+                      <div class="value-pills">
+                        ${VALUE_OPTIONS.map(option => {
+                          const active = stakeholder.valora.includes(option);
+                          return `
+                            <label class="pill-option ${active ? "active" : ""}">
+                              <input type="checkbox" data-client-id="${client.id}" data-stakeholder-index="${index}" data-stakeholder-value="${option}" ${active ? "checked" : ""} />
+                              ${option}
+                            </label>
+                          `;
+                        }).join("")}
+                      </div>
+                    </div>
+                  </div>
+                `).join("") : `<div class="inline-empty" style="grid-column:1/-1;">Sin stakeholders informados. Agrega el primero desde el botón inferior.</div>`}
+              </div>
+              <div class="row-actions hide-print" style="margin-top:14px;">
+                <button class="small-button" data-action="add-stakeholder" data-client-id="${client.id}">Agregar stakeholder</button>
+              </div>
+            </section>
+          </div>
+
+          <div class="detail-grid compact">
+            <section class="section-card">
+              <h3>Comité: foco de avance</h3>
+              <div class="summary-split">
+                <div class="summary-stack">
+                  <div class="info-grid">
+                    <div class="info-item"><div class="label">Estado general</div><div class="value">${client.estadoGeneral}</div></div>
+                    <div class="info-item"><div class="label">Hito crítico</div><div class="value">${client.proximoHito}</div></div>
+                    <div class="info-item"><div class="label">Responsables activos</div><div class="value">${client.responsables.join(", ")}</div></div>
+                    <div class="info-item"><div class="label">TO DO registrados</div><div class="value">${fmtNum(todos.length)}</div><div class="sub">Cada ítem puede marcarse como hecho o pendiente y asignar responsable.</div></div>
+                  </div>
+
+                  <div>
+                    <h3 style="margin-top:0;">TO DO</h3>
+                    <div class="section-hint">Checklist editable por negocio. La puntuación y el porcentaje se calculan automáticamente con base en los ítems marcados.</div>
+                    <div class="todo-list">
+                      ${todos.length ? todos.map((todo, index) => `
+                        <div class="todo-card ${todo.done ? "done" : ""}">
+                          <div class="todo-top">
+                            <input class="todo-check" type="checkbox" data-client-id="${client.id}" data-todo-index="${index}" ${todo.done ? "checked" : ""} />
+                            <div class="todo-status">${todo.done ? "✅ Hecho" : "⬜ Pendiente"}</div>
+                            <input class="inline-input" placeholder="Responsable" data-client-id="${client.id}" data-todo-index="${index}" data-todo-field="responsable" value="${todo.responsable}" />
+                            <div class="row-actions hide-print" style="justify-content:flex-end;">
+                              <button class="soft-button" data-remove-todo="${index}" data-client-id="${client.id}">Quitar</button>
+                            </div>
+                          </div>
+                          <textarea class="inline-textarea" placeholder="Describe el pendiente, acuerdo o siguiente paso..." data-client-id="${client.id}" data-todo-index="${index}" data-todo-field="texto">${todo.texto}</textarea>
+                        </div>
+                      `).join("") : `<div class="inline-empty">No hay TO DO registrados. Usa el botón de abajo para agregar el primero.</div>`}
+                    </div>
+                    <div class="row-actions hide-print" style="margin-top:14px;">
+                      <button class="small-button" data-action="add-todo" data-client-id="${client.id}">Agregar TO DO</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="summary-stack">
+                  <div>
+                    <h3 style="margin-top:0;">Alertas de riesgo</h3>
+                    <div class="section-hint">Señala qué está deteniendo el avance del negocio y resáltalo por nivel de riesgo.</div>
+                    <div class="alert-list">
+                      ${alertas.length ? alertas.map((alerta, index) => `
+                        <div class="alert-card ${riskLevelClass(alerta.nivel)}">
+                          <div class="alert-top">
+                            <span class="risk-badge ${slug(alerta.nivel)}">${alerta.nivel}</span>
+                            <textarea class="inline-textarea" style="min-height:84px;" placeholder="Describe la alerta, bloqueo o dependencia crítica..." data-client-id="${client.id}" data-alert-index="${index}" data-alert-field="texto">${alerta.texto}</textarea>
+                            <select class="inline-select" data-client-id="${client.id}" data-alert-index="${index}" data-alert-field="nivel">
+                              ${RISK_LEVELS.map(level => `<option value="${level}" ${alerta.nivel === level ? "selected" : ""}>${level}</option>`).join("")}
+                            </select>
+                            <div class="row-actions hide-print" style="justify-content:flex-end;">
+                              <button class="soft-button" data-remove-alert="${index}" data-client-id="${client.id}">Quitar</button>
+                            </div>
+                          </div>
+                        </div>
+                      `).join("") : `<div class="inline-empty">No hay alertas registradas. Agrega una para resaltar bloqueos o riesgos del negocio.</div>`}
+                    </div>
+                    <div class="row-actions hide-print" style="margin-top:14px;">
+                      <button class="small-button" data-action="add-alert" data-client-id="${client.id}">Agregar alerta</button>
+                    </div>
+                  </div>
+                  <div class="footer-note">Sugerencia de uso en comité: revisar flag, siguiente hito, TO DO con responsable y el mapa político antes de definir destrabes comerciales.</div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("copySummaryBtn")?.addEventListener("click", () => copySummary(client));
+      document.getElementById("detailPrintBtn")?.addEventListener("click", () => window.print());
+    }
+
+    function renderDashboard() {
+      const clients = getVisibleClients();
+      renderCoverage(clients);
+      renderSummaryBands(clients);
+      renderTopTables(clients);
+      renderAllDeals(clients);
+    }
+
+    function renderFichas() {
+      const clients = getVisibleClients();
+      renderSummaryBands(clients);
+      renderClientList(clients);
+    }
+
+    function renderApp() {
+      renderHeroStats();
+      renderDashboard();
+      renderFichas();
+      updateViewState();
+    }
+
+    function updateViewState() {
+      document.querySelectorAll("[data-view-btn]").forEach(button => {
+        button.classList.toggle("active", button.dataset.viewBtn === currentView);
+      });
+      document.getElementById("dashboardView").classList.toggle("active", currentView === "dashboard");
+      document.getElementById("fichasView").classList.toggle("active", currentView === "fichas");
+      appState.__meta__.view = currentView;
+      saveState(appState);
+    }
+
+    function updateTargetValue(key, value) {
+      appState.__meta__.targets[key] = Number(value || 0);
+      saveState(appState);
+      renderDashboard();
+    }
+
+    function updateEditableField(clientId, field, value) {
+      const state = getClientState(clientId);
+      const raw = getRawClientById(clientId) || defaultBusinessRecord();
+      if (field === "ultimoContacto") {
+        state.editable.ultimoContacto = fromInputDate(value);
+      } else if (field === "poblacion") {
+        state.poblacion = value === "" ? "" : Number(value);
+      } else if (field === "fechaIngresoEtapa") {
+        state.editable.fechaIngresoEtapa = fromInputDate(value);
+      } else if (field === "estadoNegocio" || field === "cierreTipo" || field === "cierreObservacion") {
+        ensureMetaClientsData();
+        appState.__meta__.clientsData[clientId] = { ...raw, [field]: value };
+        if (field === "estadoNegocio" && value !== "Cerrado") {
+          appState.__meta__.clientsData[clientId].cierreTipo = "";
+          appState.__meta__.clientsData[clientId].cierreObservacion = "";
+        }
+      } else {
+        state.editable[field] = value === "" ? "" : Number(value);
+      }
+      saveState(appState);
+      renderApp();
+    }
+
+    function toggleActivity(clientId, index, checked) {
+      const state = getClientState(clientId);
+      const set = new Set(state.completedActivities || []);
+      if (checked) set.add(index);
+      else set.delete(index);
+      state.completedActivities = [...set];
+      saveState(appState);
+      renderDetail();
+    }
+
+    function toggleScore(clientId, key, checked) {
+      const state = getClientState(clientId);
+      state.score[key] = checked;
+      saveState(appState);
+      renderDetail();
+    }
+
+    function normalizeActivityItem(item) {
+      return {
+        texto: item && item.texto ? item.texto : "",
+        responsable: item && item.responsable ? item.responsable : "",
+        fecha: item && item.fecha ? item.fecha : "",
+        estado: item && item.estado ? item.estado : "Por iniciar"
+      };
+    }
+
+    function currentActivityItems(client) {
+      const state = getClientState(client.id);
+      if (!Array.isArray(state.activityItems) || !state.activityItems.length) {
+        const responsablesDefault = Array.isArray(client.responsables) ? client.responsables.join(", ") : "";
+        state.activityItems = (client.actividades || []).map(item => normalizeActivityItem({ texto: item, responsable: responsablesDefault, fecha: "", estado: "Por iniciar" }));
+      }
+      return state.activityItems.map(normalizeActivityItem);
+    }
+
+    function addActivityItem(clientId) {
+      const state = getClientState(clientId);
+      const list = currentActivityItems(deriveClient(getRawClientById(clientId) || {id:clientId, actividades:[], responsables:[]}));
+      list.push(normalizeActivityItem({ texto: "", responsable: "", fecha: "", estado: "Por iniciar" }));
+      state.activityItems = list;
+      saveState(appState);
+      renderDetail();
+    }
+
+    function updateActivityField(clientId, index, field, value) {
+      const state = getClientState(clientId);
+      const list = state.activityItems || [];
+      if (!list[index]) return;
+      list[index][field] = field === 'fecha' ? fromInputDate(value) : value;
+      state.activityItems = list.map(normalizeActivityItem);
+      saveState(appState);
+      renderDetail();
+    }
+
+    function removeActivityItem(clientId, index) {
+      const state = getClientState(clientId);
+      state.activityItems = (state.activityItems || []).filter((_, idx) => idx !== index);
+      saveState(appState);
+      renderDetail();
+    }
+
+    function updateClientArrayField(clientId, field, value) {
+      ensureMetaClientsData();
+      const raw = getRawClientById(clientId) || defaultBusinessRecord();
+      appState.__meta__.clientsData[clientId] = { ...raw, [field]: parseLines(value) };
+      saveState(appState);
+      renderDetail();
+    }
+
+    function deleteBusiness(clientId) {
+      ensureMetaState();
+      const raw = getRawClientById(clientId);
+      const name = raw && raw.nombre ? raw.nombre : clientId;
+      if (!window.confirm(`¿Seguro que deseas eliminar el negocio ${name}?`)) return;
+      const deleted = new Set(appState.__meta__.deletedClients || []);
+      deleted.add(clientId);
+      appState.__meta__.deletedClients = Array.from(deleted);
+      saveState(appState);
+      const remaining = getVisibleClients();
+      selectedId = remaining[0] ? remaining[0].id : null;
+      renderApp();
+    }
+
+    function updatePriority(clientId, checked) {
+      getClientState(clientId).priorizado = checked;
+      saveState(appState);
+      renderApp();
+    }
+
+    function addStakeholder(clientId) {
+      const list = getClientState(clientId).stakeholdersFull || [];
+      list.push(normalizeStakeholder({ nombre: "", cargo: "", area: "", decisor: "No", valora: [] }));
+      getClientState(clientId).stakeholdersFull = list;
+      saveState(appState);
+      renderDetail();
+    }
+
+    function updateStakeholderField(clientId, index, field, value) {
+      const list = getClientState(clientId).stakeholdersFull || [];
+      if (!list[index]) return;
+      list[index][field] = value;
+      saveState(appState);
+    }
+
+    function toggleStakeholderValue(clientId, index, value, checked) {
+      const list = getClientState(clientId).stakeholdersFull || [];
+      if (!list[index]) return;
+      const set = new Set(list[index].valora || []);
+      if (checked) set.add(value);
+      else set.delete(value);
+      list[index].valora = [...set];
+      saveState(appState);
+      renderDetail();
+    }
+
+    function removeStakeholder(clientId, index) {
+      const list = getClientState(clientId).stakeholdersFull || [];
+      list.splice(index, 1);
+      saveState(appState);
+      renderApp();
+    }
+
+    function addTodo(clientId) {
+      getClientState(clientId).todos.push({
+        texto: "",
+        responsable: "",
+        fecha: todayBR(),
+        done: false
+      });
+      saveState(appState);
+      renderDetail();
+    }
+
+    function updateTodoField(clientId, index, field, value) {
+      const todo = getClientState(clientId).todos[index];
+      if (!todo) return;
+      todo[field] = value;
+      saveState(appState);
+    }
+
+    function toggleTodo(clientId, index, checked) {
+      const todo = getClientState(clientId).todos[index];
+      if (!todo) return;
+      todo.done = checked;
+      saveState(appState);
+      renderDetail();
+    }
+
+    function removeTodo(clientId, index) {
+      getClientState(clientId).todos.splice(index, 1);
+      saveState(appState);
+      renderApp();
+    }
+
+    function addAlert(clientId) {
+      getClientState(clientId).alertas.push({
+        texto: "",
+        nivel: "Medio"
+      });
+      saveState(appState);
+      renderDetail();
+    }
+
+    function updateAlertField(clientId, index, field, value) {
+      const alerta = getClientState(clientId).alertas[index];
+      if (!alerta) return;
+      alerta[field] = field === "nivel" && !RISK_LEVELS.includes(value) ? "Medio" : value;
+      saveState(appState);
+      if (field === "nivel") renderDetail();
+    }
+
+    function removeAlert(clientId, index) {
+      getClientState(clientId).alertas.splice(index, 1);
+      saveState(appState);
+      renderApp();
+    }
+
+
+    function openBusinessModal(mode, clientId = null) {
+      businessModalMode = mode;
+      editingBusinessId = clientId;
+      const modal = document.getElementById('businessModal');
+      const title = document.getElementById('businessModalTitle');
+      const raw = clientId ? (getRawClientById(clientId) || defaultBusinessRecord()) : defaultBusinessRecord();
+      title.textContent = mode === 'edit' ? `Editar negocio · ${raw.nombre || raw.id}` : 'Nuevo negocio';
+      document.getElementById('businessFormContainer').innerHTML = renderBusinessForm(raw);
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeBusinessModal() {
+      const modal = document.getElementById('businessModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      editingBusinessId = null;
+    }
+
+    function renderBusinessForm(raw) {
+      const responsabilidades = (raw.responsables || []).join('\n');
+      const actividades = (raw.actividades || []).join('\n');
+      const avances = (raw.avanceUltimaSemana || []).join('\n');
+      const stakeholdersText = stakeholdersToText(raw.stakeholders || []);
+      return `
+        <form id="businessForm" class="stack">
+          <input type="hidden" name="businessId" value="${raw.id || ''}" />
+          <div class="form-block">
+            <h4>Identificación del negocio</h4>
+            <div class="modal-grid three">
+              <div><div class="edit-label">Cliente</div><input class="inline-input" name="nombre" value="${raw.nombre || ''}" required /></div>
+              <div><div class="edit-label">Razón social</div><input class="inline-input" name="razonSocial" value="${raw.razonSocial || ''}" /></div>
+              <div><div class="edit-label">Dueño del negocio</div><input class="inline-input" name="duenoNegocio" value="${raw.duenoNegocio || ''}" /></div>
+              <div><div class="edit-label">Tipo de negocio</div><select class="inline-select" name="tipoNegocio"><option value="ADF" ${raw.tipoNegocio === 'ADF' ? 'selected' : ''}>ADF</option><option value="No ADF" ${raw.tipoNegocio === 'No ADF' ? 'selected' : ''}>No ADF</option></select></div>
+              <div><div class="edit-label">Subtipo</div><input class="inline-input" name="subtipo" value="${raw.subtipo || ''}" /></div>
+              <div><div class="edit-label">Producto</div><input class="inline-input" name="producto" value="${raw.producto || ''}" /></div>
+              <div><div class="edit-label">Región</div><input class="inline-input" name="region" value="${raw.region || ''}" /></div>
+              <div><div class="edit-label">Departamento / ciudades</div><input class="inline-input" name="departamentosCiudades" value="${raw.departamentosCiudades || ''}" /></div>
+              <div><div class="edit-label">Estado del negocio</div><select class="inline-select" name="estadoNegocio">${BUSINESS_STATUS_OPTIONS.map(option => `<option value="${option}" ${raw.estadoNegocio === option ? 'selected' : ''}>${option}</option>`).join('')}</select></div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h4>Gestión comercial</h4>
+            <div class="modal-grid three">
+              <div><div class="edit-label">Etapa</div><select class="inline-select" name="etapa">${STAGE_ORDER.map(option => `<option value="${option}" ${raw.etapa === option ? 'selected' : ''}>${option}</option>`).join('')}</select></div>
+              <div><div class="edit-label">Fecha de ingreso a la etapa</div><input class="inline-input" type="date" name="fechaIngresoEtapa" value="${toInputDate(raw.fechaIngresoEtapa || '')}" /></div>
+              <div><div class="edit-label">Último contacto</div><input class="inline-input" type="date" name="ultimoContacto" value="${toInputDate(raw.ultimoContacto || '')}" /></div>
+              <div><div class="edit-label">Valor pipeline (COP)</div><input class="inline-input" type="number" min="0" name="valorPipeline" value="${Number(raw.valorPipeline || 0)}" /></div>
+              <div><div class="edit-label">Probabilidad (%)</div><input class="inline-input" type="number" min="0" max="100" name="probabilidad" value="${Number(raw.probabilidad || 0)}" /></div>
+              <div><div class="edit-label">Población objetivo</div><input class="inline-input" type="number" min="0" name="poblacionObjetivo" value="${raw.poblacionObjetivo || ''}" /></div>
+              <div><div class="edit-label">Días totales del negocio</div><input class="inline-input" type="number" min="0" name="diasTotales" value="${raw.diasTotales || ''}" /></div>
+              <div><div class="edit-label">Responsable del hito</div><input class="inline-input" name="responsableHito" value="${raw.responsableHito || ''}" /></div>
+              <div><div class="edit-label">Fecha del hito</div><input class="inline-input" type="date" name="fechaHito" value="${toInputDate(raw.fechaHito || '')}" /></div>
+            </div>
+            <div class="modal-grid" style="margin-top:12px;">
+              <div><div class="edit-label">Estado actual</div><input class="inline-input" name="estadoActual" value="${raw.estadoActual || ''}" /></div>
+              <div><div class="edit-label">Próximo hito</div><input class="inline-input" name="proximoHito" value="${raw.proximoHito || ''}" /></div>
+            </div>
+            <div style="margin-top:12px;"><div class="edit-label">Resumen ejecutivo / estado general</div><textarea class="inline-textarea" name="estadoGeneral">${raw.estadoGeneral || ''}</textarea></div>
+          </div>
+
+          <div class="form-block">
+            <h4>Cierre del negocio</h4>
+            <div class="modal-grid">
+              <div><div class="edit-label">Tipo de cierre</div><select class="inline-select" name="cierreTipo"><option value="">No aplica</option>${CLOSURE_OPTIONS.map(option => `<option value="${option}" ${raw.cierreTipo === option ? 'selected' : ''}>${option}</option>`).join('')}</select></div>
+              <div><div class="edit-label">Observación de cierre</div><textarea class="inline-textarea" name="cierreObservacion" style="min-height:82px;">${raw.cierreObservacion || ''}</textarea></div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h4>Campos extendidos</h4>
+            <div class="modal-grid">
+              <div><div class="edit-label">Responsables (uno por línea)</div><textarea class="inline-textarea" name="responsablesText">${responsabilidades}</textarea></div>
+              <div><div class="edit-label">Actividades (una por línea)</div><textarea class="inline-textarea" name="actividadesText">${actividades}</textarea></div>
+              <div><div class="edit-label">Avances última semana (uno por línea)</div><textarea class="inline-textarea" name="avancesText">${avances}</textarea></div>
+              <div><div class="edit-label">Stakeholders</div><textarea class="inline-textarea" name="stakeholdersText">${stakeholdersText}</textarea><div class="form-help">Usa una línea por stakeholder con este formato: Nombre | Cargo | Teléfono | Correo | Decisor(Sí/No) | Qué valora 1, Qué valora 2</div></div>
+            </div>
+          </div>
+
+          <div class="row-actions" style="justify-content:flex-end;">
+            <button type="button" class="soft-button" id="cancelBusinessBtn">Cancelar</button>
+            <button type="submit" class="small-button">Guardar negocio</button>
+          </div>
+          <div class="modal-actions">
+            <button class="button" type="button" id="cancelBusinessBtn">Cancelar</button>
+            <button class="button primary alt" type="submit">Guardar negocio</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function saveBusinessFromForm(form) {
+      ensureMetaClientsData();
+      const fd = new FormData(form);
+      const originalId = String(fd.get('businessId') || '').trim();
+      const isEdit = businessModalMode === 'edit' && !!editingBusinessId;
+      const finalId = isEdit ? editingBusinessId : originalId;
+      const record = defaultBusinessRecord();
+      record.id = finalId;
+      record.nombre = String(fd.get('nombre') || '').trim();
+      record.razonSocial = String(fd.get('razonSocial') || '').trim() || record.nombre;
+      record.tipoNegocio = String(fd.get('tipoNegocio') || 'ADF').trim();
+      record.subtipo = String(fd.get('subtipo') || '').trim();
+      record.producto = String(fd.get('producto') || '').trim();
+      record.region = String(fd.get('region') || '').trim();
+      record.departamentosCiudades = String(fd.get('departamentosCiudades') || '').trim();
+      record.duenoNegocio = String(fd.get('duenoNegocio') || '').trim();
+      record.etapa = String(fd.get('etapa') || 'Prospección').trim();
+      record.fechaIngresoEtapa = fromInputDate(String(fd.get('fechaIngresoEtapa') || ''));
+      record.ultimoContacto = fromInputDate(String(fd.get('ultimoContacto') || ''));
+      record.valorPipeline = Number(fd.get('valorPipeline') || 0);
+      record.probabilidad = Number(fd.get('probabilidad') || 0);
+      record.poblacionObjetivo = fd.get('poblacionObjetivo') === '' ? null : Number(fd.get('poblacionObjetivo') || 0);
+      record.diasTotales = fd.get('diasTotales') === '' ? '' : Number(fd.get('diasTotales') || 0);
+      record.responsableHito = String(fd.get('responsableHito') || '').trim();
+      record.fechaHito = fromInputDate(String(fd.get('fechaHito') || ''));
+      record.estadoActual = String(fd.get('estadoActual') || '').trim();
+      record.proximoHito = String(fd.get('proximoHito') || '').trim();
+      record.estadoGeneral = String(fd.get('estadoGeneral') || '').trim();
+      record.estadoNegocio = String(fd.get('estadoNegocio') || 'Abierto').trim();
+      record.cierreTipo = String(fd.get('cierreTipo') || '').trim();
+      record.cierreObservacion = String(fd.get('cierreObservacion') || '').trim();
+      record.responsables = parseLines(fd.get('responsablesText'));
+      record.actividades = parseLines(fd.get('actividadesText'));
+      record.avanceUltimaSemana = parseLines(fd.get('avancesText'));
+      record.stakeholders = parseStakeholdersText(fd.get('stakeholdersText'));
+      appState.__meta__.clientsData[record.id] = record;
+      if (!isEdit) {
+        appState.__meta__.nextCustomId = (appState.__meta__.nextCustomId || 1) + 1;
+      }
+      const state = getClientState(record.id);
+      state.poblacion = record.poblacionObjetivo == null ? '' : record.poblacionObjetivo;
+      state.editable.ultimoContacto = record.ultimoContacto;
+      state.editable.probabilidad = record.probabilidad;
+      state.editable.diasTotales = record.diasTotales === '' ? '' : record.diasTotales;
+      state.editable.fechaIngresoEtapa = record.fechaIngresoEtapa;
+      state.stakeholdersFull = (record.stakeholders || []).map(normalizeStakeholder);
+      selectedId = record.id;
+      currentView = 'fichas';
+      initFilters();
+      saveState(appState);
+      closeBusinessModal();
+      renderApp();
+    }
+
+    function copySummary(client) {
+      const state = getClientState(client.id);
+      const score = scorePercent(state.score);
+      const population = currentPopulation(client) ? `${fmtNum(currentPopulation(client))} pacientes` : "No informado";
+      const stakeholders = getStakeholders(client)
+        .map(item => `${item.nombre || "Sin nombre"}${item.cargo ? ` (${item.cargo})` : ""}${item.decisor === "Sí" ? " [Decisor]" : ""}`)
+        .join(", ") || "No informados";
+      const todos = currentTodos(client).map(item => `- ${item.done ? "Hecho" : "Pendiente"} · ${item.texto || "TO DO sin descripción"} · Responsable: ${item.responsable || "Pendiente"}`).join("\n") || "Sin TO DO";
+      const alertas = currentAlerts(client).map(item => `- [${item.nivel}] ${item.texto || "Alerta sin descripción"}`).join("\n") || "Sin alertas";
+      const text = [
+        `Cliente: ${client.nombre}`,
+        `Tipo de negocio: ${client.tipoNegocio} / ${client.subtipo}`,
+        `Producto: ${client.producto}`,
+        `Valor pipeline total: ${fmtMoney(client.valorPipeline)}`,
+        `Valor ponderado: ${fmtMoney(client.valorPonderado)}`,
+        `Etapa: ${client.etapa} (${client.diasEtapa} días en etapa)`,
+        `Días totales: ${client.diasTotales || "No informado"}`,
+        `Probabilidad: ${client.probabilidad}%`,
+        `Flag: ${client.flag}`,
+        `Estado del negocio: ${getClosureSummary(client)}`,
+        `Estado actual: ${client.estadoActual}`,
+        `Próximo hito: ${client.proximoHito}`,
+        `Responsable del hito: ${client.responsableHito}`,
+        `Población: ${population}`,
+        `Stakeholders: ${stakeholders}`,
+        `TO DO:\n${todos}`,
+        `Alertas:\n${alertas}`,
+        `Score del deal: ${score.done}/5`
+      ].join("\n");
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById("copySummaryBtn");
+        if (!btn) return;
+        const original = btn.textContent;
+        btn.textContent = "Resumen copiado";
+        setTimeout(() => { btn.textContent = original; }, 1400);
+      });
+    }
+
+    function switchToClient(clientId) {
+      selectedId = clientId;
+      currentView = "fichas";
+      renderApp();
+      const detail = document.getElementById("detailPanel");
+      if (detail) detail.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function attachStaticEvents() {
+      ["searchInput", "tipoFilter", "subtipoFilter", "etapaFilter", "riesgoFilter", "sortBy"].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener("input", renderApp);
+        el.addEventListener("change", renderApp);
+      });
+
+      document.getElementById("clearFiltersBtn").addEventListener("click", () => {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("tipoFilter").value = "";
+        document.getElementById("subtipoFilter").value = "";
+        document.getElementById("etapaFilter").value = "";
+        document.getElementById("riesgoFilter").value = "";
+        document.getElementById("sortBy").value = "riesgo";
+        renderApp();
+      });
+
+      document.getElementById("printBtn").addEventListener("click", () => window.print());
+      document.getElementById("newBusinessBtn").addEventListener("click", () => openBusinessModal('create'));
+      document.getElementById("closeBusinessModalBtn").addEventListener("click", closeBusinessModal);
+      document.getElementById('businessModal').addEventListener('click', (event) => { if (event.target.id === 'businessModal') closeBusinessModal(); });
+      document.addEventListener('submit', event => {
+        if (event.target && event.target.id === 'businessForm') {
+          event.preventDefault();
+          saveBusinessFromForm(event.target);
+        }
+      });
+      document.addEventListener('click', event => {
+        if (event.target && event.target.id === 'cancelBusinessBtn') {
+          closeBusinessModal();
+        }
+      });
+
+      document.addEventListener("click", event => {
+        const viewButton = event.target.closest("[data-view-btn]");
+        if (viewButton) {
+          currentView = viewButton.dataset.viewBtn;
+          updateViewState();
+          return;
+        }
+
+        const openClient = event.target.closest("[data-open-client]");
+        if (openClient && !event.target.closest("input, button, select, textarea, label")) {
+          switchToClient(openClient.dataset.openClient);
+          return;
+        }
+
+        const editBusinessButton = event.target.closest("[data-edit-business]");
+        if (editBusinessButton) {
+          openBusinessModal('edit', editBusinessButton.dataset.editBusiness);
+          return;
+        }
+
+        const deleteBusinessButton = event.target.closest("[data-delete-business]");
+        if (deleteBusinessButton) {
+          deleteBusiness(deleteBusinessButton.dataset.deleteBusiness);
+          return;
+        }
+
+        const addActivityItemButton = event.target.closest("[data-action='add-activity-item']");
+        if (addActivityItemButton) {
+          addActivityItem(addActivityItemButton.dataset.clientId);
+          return;
+        }
+
+        const removeActivityItemButton = event.target.closest("[data-remove-activity-item]");
+        if (removeActivityItemButton) {
+          removeActivityItem(removeActivityItemButton.dataset.clientId, Number(removeActivityItemButton.dataset.removeActivityItem));
+          return;
+        }
+
+        const addStakeholderButton = event.target.closest("[data-action='add-stakeholder']");
+        if (addStakeholderButton) {
+          addStakeholder(addStakeholderButton.dataset.clientId);
+          return;
+        }
+
+        const removeStakeholderButton = event.target.closest("[data-remove-stakeholder]");
+        if (removeStakeholderButton) {
+          removeStakeholder(removeStakeholderButton.dataset.clientId, Number(removeStakeholderButton.dataset.removeStakeholder));
+          return;
+        }
+
+        const addTodoButton = event.target.closest("[data-action='add-todo']");
+        if (addTodoButton) {
+          addTodo(addTodoButton.dataset.clientId);
+          return;
+        }
+
+        const removeTodoButton = event.target.closest("[data-remove-todo]");
+        if (removeTodoButton) {
+          removeTodo(removeTodoButton.dataset.clientId, Number(removeTodoButton.dataset.removeTodo));
+          return;
+        }
+
+        const addAlertButton = event.target.closest("[data-action='add-alert']");
+        if (addAlertButton) {
+          addAlert(addAlertButton.dataset.clientId);
+          return;
+        }
+
+        const removeAlertButton = event.target.closest("[data-remove-alert]");
+        if (removeAlertButton) {
+          removeAlert(removeAlertButton.dataset.clientId, Number(removeAlertButton.dataset.removeAlert));
+        }
+      });
+
+      document.addEventListener("change", event => {
+        const targetInput = event.target.closest("[data-target-key]");
+        if (targetInput) {
+          updateTargetValue(targetInput.dataset.targetKey, targetInput.value);
+          return;
+        }
+
+        const editField = event.target.closest("[data-edit-field]");
+        if (editField) {
+          updateEditableField(editField.dataset.clientId, editField.dataset.editField, editField.value);
+          return;
+        }
+
+        const priority = event.target.closest("[data-priority-client]");
+        if (priority) {
+          updatePriority(priority.dataset.priorityClient, priority.checked);
+          return;
+        }
+
+        const activityField = event.target.closest("[data-activity-field]");
+        if (activityField) {
+          updateActivityField(activityField.dataset.clientId, Number(activityField.dataset.activityIndex), activityField.dataset.activityField, activityField.value);
+          return;
+        }
+
+        const arrayField = event.target.closest("[data-client-array-field]");
+        if (arrayField) {
+          updateClientArrayField(arrayField.dataset.clientId, arrayField.dataset.clientArrayField, arrayField.value);
+          return;
+        }
+
+        const score = event.target.closest("[data-score]");
+        if (score) {
+          toggleScore(score.dataset.clientId, score.dataset.score, score.checked);
+          return;
+        }
+
+        const stakeholderValue = event.target.closest("[data-stakeholder-value]");
+        if (stakeholderValue) {
+          toggleStakeholderValue(stakeholderValue.dataset.clientId, Number(stakeholderValue.dataset.stakeholderIndex), stakeholderValue.dataset.stakeholderValue, stakeholderValue.checked);
+          return;
+        }
+
+        const stakeholderField = event.target.closest("[data-stakeholder-field]");
+        if (stakeholderField) {
+          updateStakeholderField(stakeholderField.dataset.clientId, Number(stakeholderField.dataset.stakeholderIndex), stakeholderField.dataset.stakeholderField, stakeholderField.value);
+          if (stakeholderField.tagName === "SELECT") renderDetail();
+          return;
+        }
+
+        const todoCheck = event.target.closest("[data-todo-index]:not([data-todo-field])");
+        if (todoCheck && todoCheck.type === "checkbox") {
+          toggleTodo(todoCheck.dataset.clientId, Number(todoCheck.dataset.todoIndex), todoCheck.checked);
+          return;
+        }
+
+        const todoField = event.target.closest("[data-todo-field]");
+        if (todoField) {
+          updateTodoField(todoField.dataset.clientId, Number(todoField.dataset.todoIndex), todoField.dataset.todoField, todoField.value);
+          return;
+        }
+
+        const alertField = event.target.closest("[data-alert-field]");
+        if (alertField) {
+          updateAlertField(alertField.dataset.clientId, Number(alertField.dataset.alertIndex), alertField.dataset.alertField, alertField.value);
+          return;
+        }
+      });
+
+      document.addEventListener("input", event => {
+        const stakeholderField = event.target.closest("[data-stakeholder-field]");
+        if (stakeholderField && stakeholderField.tagName !== "SELECT") {
+          updateStakeholderField(stakeholderField.dataset.clientId, Number(stakeholderField.dataset.stakeholderIndex), stakeholderField.dataset.stakeholderField, stakeholderField.value);
+          return;
+        }
+
+        const activityField = event.target.closest("[data-activity-field]");
+        if (activityField && activityField.tagName !== "SELECT") {
+          updateActivityField(activityField.dataset.clientId, Number(activityField.dataset.activityIndex), activityField.dataset.activityField, activityField.value);
+          return;
+        }
+
+        const arrayField = event.target.closest("[data-client-array-field]");
+        if (arrayField) {
+          updateClientArrayField(arrayField.dataset.clientId, arrayField.dataset.clientArrayField, arrayField.value);
+          return;
+        }
+
+        const todoField = event.target.closest("[data-todo-field]");
+        if (todoField) {
+          updateTodoField(todoField.dataset.clientId, Number(todoField.dataset.todoIndex), todoField.dataset.todoField, todoField.value);
+          return;
+        }
+
+        const alertField = event.target.closest("[data-alert-field]");
+        if (alertField && alertField.tagName !== "SELECT") {
+          updateAlertField(alertField.dataset.clientId, Number(alertField.dataset.alertIndex), alertField.dataset.alertField, alertField.value);
+        }
+      });
+    }
+
+    async function bootstrapApp() {
+      const localPrimary = loadState();
+      const localBackup = loadLocalBackup();
+
+      if (hasRemoteConfig()) {
+        try {
+          const remote = await fetchRemoteState();
+          if (remote && remote.state && Object.keys(remote.state).length) {
+            appState = remote.state;
+            remoteStateVersion = remote.updatedAt || null;
+          } else if (localPrimary && Object.keys(localPrimary).length) {
+            appState = localPrimary;
+          } else if (localBackup && Object.keys(localBackup).length) {
+            appState = localBackup;
+          } else {
+            appState = {};
+          }
+        } catch (error) {
+          console.error(error);
+          if (localPrimary && Object.keys(localPrimary).length) {
+            appState = localPrimary;
+          } else if (localBackup && Object.keys(localBackup).length) {
+            appState = localBackup;
+          } else {
+            appState = {};
+          }
+        }
+      } else {
+        appState = localPrimary && Object.keys(localPrimary).length ? localPrimary : {};
+      }
+
+      migrateState();
+      initFilters();
+      attachStaticEvents();
+      renderApp();
+      saveState(appState);
+
+      if (hasRemoteConfig()) {
+        await writeRemoteState(appState);
+        startRemoteSync();
+      }
+    }
+
+    bootstrapApp();
+  </script>
+</body>
+</html>
