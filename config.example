@@ -1,0 +1,5 @@
+// Copia este archivo como config.js y reemplaza los valores con tu proyecto de Supabase.
+window.PIPELINE_CONFIG = {
+  SUPABASE_URL: 'https://TU-PROYECTO.supabase.co',
+  SUPABASE_ANON_KEY: 'TU_ANON_KEY_PUBLICA'
+};
